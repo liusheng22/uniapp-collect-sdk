@@ -23,7 +23,7 @@ export function reportLog(
   // 如果采集到到是上报接口，则停止执行，否则会死循环
   // if (typeof errorInfo === 'string' && ~errorInfo.indexOf(this.collectionApiPath)) return
   // 可以不必纠结于「errorInfo」的类型是传入objet还是string
-  if (typeof errorInfo === 'object') errorInfo = JSON.stringify(errorInfo)
+  if (typeof errorInfo === 'object') { errorInfo = JSON.stringify(errorInfo) }
   const initConfig = logs.initConfig
   // let storeOpenId = wxb.getStorageSync('openId')
   let { uniqueId } = initConfig
@@ -56,7 +56,7 @@ export function reportLog(
 
   uniqueId = uniqueId || ('' as string)
   // eslint-disable-next-line
-  requestId = `${Date.now()}_${uniqueId.padStart(28, '_').slice(22)}`
+  requestId = `${Date.now()}_${uniqueId.padStart(28, "_").slice(22)}`;
 
   // if (isClearLog && !this.logList.length) return
   // if (isClearLog) errorInfo = JSON.stringify(this.logList)
@@ -64,7 +64,8 @@ export function reportLog(
   // if (!this.collectionApi) return
   return new Promise((resolve, reject) => {
     logs.oriRequest({
-      url: 'https://test.shuzhikongjian.com/miniapp/biz/log/error-collect',
+      // url: 'https://test.shuzhikongjian.com/miniapp/biz/log/error-collect',
+      url: 'https://fastmock.site/#/project/6345ad1b8161c2b06ef04f23db6c1b1e',
       method: 'POST',
       header: { isReportRequest: 1 },
       data: { ...info, errorType, errorInfo },

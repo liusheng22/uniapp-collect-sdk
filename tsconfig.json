@@ -7,6 +7,7 @@
         "src/*"
       ]
     },
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "sourceMap": false,
     "noImplicitAny": false,
@@ -26,5 +27,13 @@
     "strict": false, // 启用所有严格类型检查选项
     "esModuleInterop": true, // 启用es模块导入到commonjs的转换
     "skipLibCheck": true, // 跳过声明文件的检查
-  }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.js"
+  ]
 }

@@ -2,27 +2,28 @@
   "name": "uni-collect-ts",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "bin/index.js",
+  "types": "bin/index.d.ts",
   "scripts": {
     "dev": "ttsc -w",
-    "build": "tsc",
+    "dev:watch": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
+    "build": "tsc && tsc-alias",
     "release": "tsc && npm publish",
     "eslint": "eslint . --fix --ext .ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/wechat-miniprogram": "^3.1.0",
-    "@typescript-eslint/eslint-plugin": "^5.12.1",
-    "@typescript-eslint/parser": "^5.12.1",
+    "concurrently": "^8.2.2",
     "eslint": "^8.26.0",
     "eslint-config-wxb-typescript": "^0.0.18",
-    "prettier": "^2.7.1",
+    "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.8",
+    "tsconfig-paths": "^4.2.0",
     "tslint-config-prettier": "^1.18.0",
-    "ttypescript": "^1.5.13",
-    "typescript": "^3.9.10",
-    "typescript-transform-paths": "^3.4.4"
+    "ttypescript": "^1.5.15",
+    "typescript": "^3.9.10"
   }
 }

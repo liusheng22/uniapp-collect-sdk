@@ -1,10 +1,10 @@
-import { proxyComponentsTapEvents, rewritePage } from './lifecycle'
 import {
   onUserCaptureScreen,
   onMemory,
   onNetwork,
   lastUnusualReport
 } from './events'
+import { proxyComponentsTapEvents, rewritePage } from './lifecycle'
 import { onApp } from './onApp'
 import { onError } from './onError'
 import { reportLog } from './report'
@@ -89,16 +89,15 @@ export class Logs {
       isShowLog = false,
       isOnLifecycle = false,
       isOnCaptureScreen = false,
-      // isOnTapEvent = false,
-      isOnTapEvent = true,
+      isOnTapEvent = false,
       isTraceRoute = false,
       isTraceNetwork = false,
       isTraceMemory = false
     } = config
-    if (!platform)
-      throw new Error('缺少必要参数「platform」,需要传入所采集的平台类型')
+    if (!platform) { throw new Error('缺少必要参数「platform」,需要传入所采集的平台类型') }
     // if (!openId) openId = 'unknown'
 
+    this.vueApp = {}
     this.initConfig = {
       ...config,
       uniqueId,
@@ -110,13 +109,13 @@ export class Logs {
     }
 
     // 点击事件
-    if (isOnTapEvent) proxyComponentsTapEvents(this)
+    if (isOnTapEvent) { proxyComponentsTapEvents(this) }
     // 截屏事件
-    if (isOnCaptureScreen) onUserCaptureScreen(this)
+    if (isOnCaptureScreen) { onUserCaptureScreen(this) }
     // 内存事件
-    if (isTraceMemory) onMemory(this)
+    if (isTraceMemory) { onMemory(this) }
     // 网络状态
-    if (isTraceNetwork) onNetwork(this)
+    if (isTraceNetwork) { onNetwork(this) }
     // proxyPageEvents(this)
     rewritePage(this)
 
@@ -134,16 +133,16 @@ export class Logs {
   }
 
   public async report(obj: ReportOpts, logs: Logs = this) {
-    // return new Promise((resolve, reject) => {
-    //   reportLog(obj, logs)
-    //     .then((data: any) => {
-    //       resolve(data)
-    //     })
-    //     .catch((err) => {
-    //       reject(err)
-    //     })
-    // })
-    return reportLog(obj, logs)
+    return new Promise((resolve, reject) => {
+      reportLog(obj, logs)
+        .then((data: any) => {
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+    // return reportLog(obj, logs)
   }
 
   public successResponse(success: Success, config: ResConfig) {

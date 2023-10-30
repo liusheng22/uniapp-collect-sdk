@@ -1,6 +1,6 @@
 import { Logs, activityPage } from './index'
-import { formatTime } from '@/utils/index'
 import { wxb } from '@/constants/index'
+import { formatTime } from '@/utils/index'
 
 export function onApp(logs: Logs) {
   wxb.onAppShow(() => {
