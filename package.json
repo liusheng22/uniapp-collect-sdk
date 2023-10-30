@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "dev": "ttsc -w",
     "build": "tsc",
     "release": "tsc && npm publish",
-    "eslint": "eslint . --ext .ts"
+    "eslint": "eslint . --fix --ext .ts"
   },
   "keywords": [],
   "author": "",
@@ -17,9 +18,11 @@
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
     "eslint": "^8.26.0",
+    "eslint-config-wxb-typescript": "^0.0.18",
     "prettier": "^2.7.1",
+    "tslint-config-prettier": "^1.18.0",
+    "ttypescript": "^1.5.13",
     "typescript": "^3.9.10",
-    "tslint-config-prettier": "^1.18.0"
-  },
-  "dependencies": {}
+    "typescript-transform-paths": "^3.4.4"
+  }
 }

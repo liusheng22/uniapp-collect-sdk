@@ -1,20 +1,30 @@
 {
   "compilerOptions": {
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "baseUrl": "./",
+    "types": [],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
-    "skipLibCheck": true
-  },
-  "include": [
-    "src/**/*",
-    "index.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "allowJs": true,
+    "sourceMap": false,
+    "noImplicitAny": false,
+    "target": "ES6",
+    "module": "commonjs",
+    "lib": [
+      "ES2015",
+      "ES2016",
+      "ES2017",
+      "DOM",
+      "ScriptHost"
+    ],
+    "experimentalDecorators": true, // 启用实验性的ES装饰器
+    "emitDecoratorMetadata": true, // 为装饰器提供元数据的支持
+    "outDir": "./bin",
+    "rootDir": "./src",
+    "strict": false, // 启用所有严格类型检查选项
+    "esModuleInterop": true, // 启用es模块导入到commonjs的转换
+    "skipLibCheck": true, // 跳过声明文件的检查
+  }
 }
