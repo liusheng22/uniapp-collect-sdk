@@ -1,28 +1,15 @@
-// import { reportLog } from './report'
-// import { formatTime } from '@/utils/index'
-import { Logs, activityPage } from './index'
 import { onPageHide } from './onPage'
+import { CollectLogs } from './index'
+import { activityPage, getUuid, sleep } from '@/utils'
+import { isObject } from '@/utils/data-type'
 
-export function sleep(time = 1500): Promise<void> {
-  return new Promise<void>((resolve) => setTimeout(resolve, time))
-}
-
-export function proxyComponentsTapEvents(logs: Logs) {
+export function proxyComponentsTapEvents(logs: CollectLogs) {
   const oldComponent = Component
   Component = function (componentOptions: any, ...arg: any[]) {
     const methods = getMethods(componentOptions.methods)
     if (methods) {
       methods.forEach((methodName) => {
         clickProxy(componentOptions.methods, methodName, logs)
-        // const originMethod = componentOptions[methodName]
-        // // originMethod.apply(this, arguments)
-        // if (typeof originMethod !== "function") {
-        //   return true
-        // }
-
-        // (componentOptions.methods as any)[methodName] = function (options: any) {
-        //   return originMethod.call(this, options)
-        // }
       })
     }
 
@@ -36,9 +23,10 @@ export function proxyComponentsTapEvents(logs: Logs) {
         console.log('onLoad====>', activityPage().route, args)
         // todo: 执行页面浏览上报
         logs.report({
-          errorType: 'onLoad',
-          errorInfo: activityPage().route
-          // params: activityPage().options
+          id: getUuid(),
+          eventType: 'page_view',
+          errorInfo: activityPage().route,
+          loadOptions: activityPage().options
         })
         isNewLoad = false
         oldLoad.apply(this, arg)
@@ -74,7 +62,7 @@ export function proxyComponentsTapEvents(logs: Logs) {
         })
         logs.report({
           errorType: 'stayTime',
-          errorInfo: time + 's'
+          errorInfo: `${time }s`
           // params: activityPage().options
         })
         oldHide.apply(this, arg)
@@ -93,45 +81,35 @@ export function proxyComponentsTapEvents(logs: Logs) {
         })
         logs.report({
           errorType: 'stayTime',
-          errorInfo: time + 's'
+          errorInfo: `${time }s`
           // params: activityPage().options
         })
         old.apply(this, arg)
       }
     }
-    // try {
-    //   var methods = getMethods(componentOptions.methods)
-    //   if (methods) {
-    //     methods.forEach((method: any) => {
-    //       clickProxy(componentOptions.methods, method)
-    //     })
-    //   }
-    //   oldComponent.apply(this, arguments)
-    // } catch (obj) {
-    //   oldComponent.apply(this, arguments)
-    // }
 
     return oldComponent(componentOptions)
   }
 }
 
-export function proxyPageEvents(logs: Logs) {
+export function proxyPageEvents(logs: CollectLogs) {
   const oldPage = Page
   Page = function (pageOptions) {
     const methods = getMethods(pageOptions)
-    console.log('methods', methods)
     if (methods) {
       methods.forEach((methodName) => {
-        // if (['onShow', 'onHide'].includes(methodName)) {
-        //   methods[methodName] = function () {}
-        // }
-        // if (methodName === 'onShow') {
-        //   let oldOnShow = methods[methodName]
-        //   methods[methodName] = function () {
-        //     onPageShow(logs, oldOnShow)
-        //   }
-        // }
+        if (['onShow', 'onHide'].includes(methodName)) {
+          methods[methodName] = function () {}
+        }
+        if (methodName === 'onShow') {
+          console.log('代理了-------onshow')
+          const oldOnShow = methods[methodName]
+          methods[methodName] = function () {
+            // onPageShow(logs, oldOnShow)
+          }
+        }
         if (methodName === 'onHide') {
+          console.log('代理了-------onhide')
           // let oldOnHide = methods[methodName]
           onPageHide(logs, methods, methodName)
           // methods[methodName] = function () {
@@ -165,39 +143,8 @@ export function proxyPageEvents(logs: Logs) {
   // onPageHide(logs)
 }
 
-export function rewritePage(logs: Logs) {
-  const originPage = Page
-
-  Page = function (pageOptions) {
-    // Object.keys(pageOptions).forEach((methodName) => {
-    const methods = getMethods(pageOptions)
-    methods.forEach((methodName) => {
-      clickProxy(methods, methodName, logs)
-      const originMethod = pageOptions[methodName]
-      if (typeof originMethod !== 'function') {
-        return true
-      }
-      // eslint-disable-next-line @typescript-eslint/no-extra-semi
-      ;(pageOptions as any)[methodName] = function (options: any) {
-        if (['onLoad', 'onShow'].includes(methodName)) {
-          console.log('-------me------', methodName)
-        }
-
-        return originMethod.call(this, options)
-      }
-    })
-
-    return originPage(pageOptions)
-  }
-
-  const oldApp = App
-  App = function (option) {
-    return oldApp(option)
-  }
-}
-
 // 事件代理
-export function clickProxy(options: any, method: any, logs: Logs) {
+export function clickProxy(options: any, method: any, logs: CollectLogs) {
   const isClick = (eventType: any) => {
     return !!{
       tap: true,
@@ -205,13 +152,9 @@ export function clickProxy(options: any, method: any, logs: Logs) {
       longtap: true
     }[eventType]
   }
-  const isObject = (arg: any) => {
-    return arg !== null && toString.call(arg) === '[object Object]'
-  }
+
   const fn = options[method]
 
-  // console.log('----fn----1', method, fn)
-  // let that = this
   options[method] = function (...arg: any) {
     const tapsInfo = {
       tapType: '',
@@ -236,14 +179,11 @@ export function clickProxy(options: any, method: any, logs: Logs) {
     // if (typeof tapType === 'boolean' || !tapType) return null
 
     return (
-      eventType &&
-        isClick(eventType) &&
-        tapId &&
-        tapType &&
-        /* eslint-disable-next-line */
-        // that.postActionClick(tapType, tapId),
-        // console.log('===tapType, tapId===', tapType, tapId),
-        logs.report({ errorInfo: tapsInfo }),
+      eventType
+        && isClick(eventType)
+        // && tapId
+        // && tapType
+        && logs.report({ errorInfo: tapsInfo }),
       fn && fn.apply(this, arg)
     )
   }

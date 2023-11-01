@@ -1,8 +1,8 @@
-import { Logs } from './index'
+import { CollectLogs } from './index'
 
-export function onPageShow(logs: Logs) {
+export function onPageShow(logs: CollectLogs) {
   console.log('-----onShow------')
-  if (!logs.initConfig.isTraceRoute) return
+  if (!logs.initConfig.isTraceRoute) { return }
   // logs.currentPages = activityPage().route
   // this.currentsRoutes = [ ...routeList ]
   // if (this.timer) {
@@ -24,9 +24,9 @@ export function onPageShow(logs: Logs) {
   // }
 }
 
-// export function onPageHide (logs: Logs, oldOnHide: any) {
+// export function onPageHide (logs: CollectLogs, oldOnHide: any) {
 export function onPageHide(
-  logs: Logs,
+  logs: CollectLogs,
   methods: any,
   methodName: any,
   ...arg: any[]

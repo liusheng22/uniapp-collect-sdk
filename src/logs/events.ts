@@ -1,9 +1,9 @@
-import { Logs } from './index'
-import { formatTime } from '@/utils/index'
+import { CollectLogs } from './index'
 import { wxb } from '@/constants/index'
+import { formatTime } from '@/utils/index'
 
 // 监听用户截屏事件
-export function onUserCaptureScreen(logs: Logs) {
+export function onUserCaptureScreen(logs: CollectLogs) {
   wxb.onUserCaptureScreen(() => {
     logs.report({
       errorType: 'captureScreen',
@@ -14,23 +14,23 @@ export function onUserCaptureScreen(logs: Logs) {
 
 /**
  * 当 iOS/Android 向小程序进程发出内存警告时，触发该事件
- * @memberof Logs
+ * @memberof CollectLogs
  */
-export function onMemory(logs: Logs) {
+export function onMemory(logs: CollectLogs) {
   wxb.onMemoryWarning((error: any) => {
     console.log('errorInfo:', error)
     const memoryLevel = {
-      '0': '无等级',
-      '5': '内存轻微',
-      '10': '内存不足',
-      '15': '内存临界'
+      0: '无等级',
+      5: '内存轻微',
+      10: '内存不足',
+      15: '内存临界'
     }
     const { level = '0' } = error
     const errorInfo = memoryLevel[level]
     // Android手机先将错误日志存储到本地，下次进入小程序时再读取相关错误日志，进行上报
     if (
-      typeof logs.systemInfo.system === 'string' &&
-      ~logs.systemInfo.system.indexOf('Android')
+      typeof logs.systemInfo.system === 'string'
+      && ~logs.systemInfo.system.indexOf('Android')
     ) {
       // 对本次内存溢出造成闪退的日志信息进行存储
       wxb.setStorageSync('memoryUnusualLogInfo', errorInfo)
@@ -50,7 +50,7 @@ export function onMemory(logs: Logs) {
 }
 
 // 监控网络状态变化
-export function onNetwork(logs: Logs) {
+export function onNetwork(logs: CollectLogs) {
   const typeList = {
     wifi: 'wifi 网络',
     '2g': '2g 网络',
@@ -61,8 +61,7 @@ export function onNetwork(logs: Logs) {
     none: '无网络'
   }
   const type2text = (type: string) => {
-    if (type) return typeList[type]
-    else return '未知网络'
+    if (type) { return typeList[type] } else { return '未知网络' }
   }
   let initNetworkType = ''
   const reportNetwork = (errorInfo: any) => {
@@ -93,8 +92,8 @@ export function onNetwork(logs: Logs) {
       const networkInfo = wxb.getStorageSync('networkUnusualLogInfo')
       wxb.removeStorageSync('networkUnusualLogInfo')
       // 对上一次网络异常，可能造成的上报失败进行补上报
-      networkInfo &&
-        logs.report({
+      networkInfo
+        && logs.report({
           errorType: 'networkState',
           errorInfo: networkInfo
         })
@@ -124,7 +123,7 @@ export function onNetwork(logs: Logs) {
 }
 
 // 最后一次小程序异常情况，再次启动小程序后进行补上报
-export function lastUnusualReport(logs: Logs) {
+export function lastUnusualReport(logs: CollectLogs) {
   const errorInfo = wxb.getStorageSync('memoryUnusualLogInfo')
   const logList = wxb.getStorageSync('unusualLogList')
   const networkInfo = wxb.getStorageSync('networkUnusualLogInfo')
@@ -149,8 +148,8 @@ export function lastUnusualReport(logs: Logs) {
   }
 
   // 对上一次网络异常，可能造成的上报失败进行补上报
-  networkInfo &&
-    logs
+  networkInfo
+    && logs
       .report({
         errorType: 'networkState',
         errorInfo: networkInfo

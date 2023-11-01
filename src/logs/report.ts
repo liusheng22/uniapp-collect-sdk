@@ -1,4 +1,7 @@
-import { Logs, activityPage, ReportOpts } from './index'
+import { ReportOpts } from '../types'
+import { CollectLogs } from '.'
+import { activityPage, getPageInfo } from '@/utils'
+import { log } from '@/utils/console-log'
 
 /**
  * 直接上报相关错误、异常、日志信息
@@ -7,10 +10,11 @@ import { Logs, activityPage, ReportOpts } from './index'
  * errorInfo <String> 错误信息
  * requestId <String> 唯一请求ID
  * isClearLog <Boolean> 上报完后是否清除logList
- * @param {Logs} logs
+ * @param {CollectLogs} logs
  */
 export function reportLog(
   {
+    eventType,
     errorType = 'logInfo',
     errorInfo = '',
     requestId = '',
@@ -18,7 +22,7 @@ export function reportLog(
     reportPlatform = '',
     apiQuery = ''
   }: ReportOpts,
-  logs: Logs
+  logs: CollectLogs
 ) {
   // 如果采集到到是上报接口，则停止执行，否则会死循环
   // if (typeof errorInfo === 'string' && ~errorInfo.indexOf(this.collectionApiPath)) return
@@ -62,13 +66,40 @@ export function reportLog(
   // if (isClearLog) errorInfo = JSON.stringify(this.logList)
   // this.logOutput(errorType, errorInfo)
   // if (!this.collectionApi) return
+
+  const lib = {
+    lib: 'UNIAPP',
+    lib_detail: '',
+    lib_method: 'AUTO',
+    lib_version: 'v2.0.7'
+  }
+  const { navigationBarTitleText } = getPageInfo(logs.pages, pagePath)
+  const properties = {
+    project_account: '',
+    group_account: '',
+    page_title: navigationBarTitleText,
+    page_id: pagePath
+  }
+  const baseParams = {
+    distinct_id: uniqueId,
+    event: eventType,
+    project: 'product_basic',
+    type: 'track'
+  }
+  const data = {
+    ...baseParams,
+    properties,
+    lib
+  }
+  log('上报数据:', baseParams, properties)
+
   return new Promise((resolve, reject) => {
     logs.oriRequest({
-      // url: 'https://test.shuzhikongjian.com/miniapp/biz/log/error-collect',
-      url: 'https://fastmock.site/#/project/6345ad1b8161c2b06ef04f23db6c1b1e',
+      url: 'https://www.fastmock.site/mock/6345ad1b8161c2b06ef04f23db6c1b1e/mock/post',
       method: 'POST',
       header: { isReportRequest: 1 },
-      data: { ...info, errorType, errorInfo },
+      // data: { ...info, errorType, errorInfo },
+      data,
       success: () => resolve({}),
       fail: () => reject(new Error('上报失败'))
     })

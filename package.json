@@ -12,7 +12,8 @@
     "dev:watch": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "build": "tsc && tsc-alias",
     "release": "tsc && npm publish",
-    "eslint": "eslint . --fix --ext .ts"
+    "eslint": "eslint . --fix --ext .ts",
+    "dev:vue2": "cd examples/uniapp-vue2 && npm run dev:mp-weixin"
   },
   "devDependencies": {
     "@types/wechat-miniprogram": "^3.1.0",
@@ -21,7 +22,6 @@
     "eslint-config-wxb-typescript": "^0.0.18",
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.8",
-    "tsconfig-paths": "^4.2.0",
     "tslint-config-prettier": "^1.18.0",
     "ttypescript": "^1.5.15",
     "typescript": "^3.9.10"

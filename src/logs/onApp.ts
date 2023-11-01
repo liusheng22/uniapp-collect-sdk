@@ -1,8 +1,8 @@
-import { Logs, activityPage } from './index'
+import { CollectLogs } from './index'
 import { wxb } from '@/constants/index'
-import { formatTime } from '@/utils/index'
+import { activityPage, formatTime } from '@/utils/index'
 
-export function onApp(logs: Logs) {
+export function onApp(logs: CollectLogs) {
   wxb.onAppShow(() => {
     onAppShowReport(logs)
   })
@@ -17,14 +17,15 @@ export function onApp(logs: Logs) {
   })
 }
 
-export function startInterval(logs: Logs) {
+export function startInterval(logs: CollectLogs) {
   logs.vueApp.timer = setInterval(() => {
     ++logs.vueApp.seconds
   }, 1000)
 }
 
 // 应用切到前台时
-export function onAppShowReport(logs: Logs) {
+export function onAppShowReport(logs: CollectLogs) {
+  // console.log('onAppShowReport')
   // let curr = logs.activityPage
   // let curr = activityPage
   logs.vueApp.entryPages = activityPage().route || 'loading'
@@ -40,7 +41,8 @@ export function onAppShowReport(logs: Logs) {
 }
 
 // 应用切到后台时
-export function onAppHideReport(logs: Logs) {
+export function onAppHideReport(logs: CollectLogs) {
+  // console.log('onAppHideReport')
   logs.vueApp.leavePages = activityPage().route || 'loading'
   logs.vueApp.leaveDate = formatTime()
   const { seconds, entryPages, leavePages, entryDate, leaveDate } = logs.vueApp

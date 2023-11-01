@@ -1,91 +1,60 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line no-useless-escape
+import uniPages from 'uni-pages?{\"type\":\"style\"}'
 import {
   onUserCaptureScreen,
   onMemory,
   onNetwork,
   lastUnusualReport
 } from './events'
-import { proxyComponentsTapEvents, rewritePage } from './lifecycle'
+import { proxyComponentsTapEvents, proxyPageEvents } from './lifecycle'
 import { onApp } from './onApp'
 import { onError } from './onError'
 import { reportLog } from './report'
+import { ReportOpts, InitConfig, Success, ResConfig } from '../types'
+import { consoleLog } from '@/utils/console-log'
+import { validateParams } from '@/utils/validate'
 
-export interface Success {
-  statusCode: number
-  reqQuery: any
-  data: any
-}
-
-export interface Fail {
-  statusCode: number
-  data: any
-}
-
-export interface ReportOpts {
-  errorType?: string
-  errorInfo: any
-  params?: any
-  requestId?: string
-  userId?: string
-  reportPlatform?: string
-  apiQuery?: string
-  isClearLog?: boolean
-}
-
-export interface ResConfig {
-  data: any
-  url: string
-}
-
-export interface InitConfig {
-  uniqueId?: string
-  platform?: string
-  isShowLog?: boolean
-  isOnLifecycle?: boolean
-  isOnCaptureScreen?: boolean
-  isOnTapEvent?: boolean
-  isTraceRoute?: boolean
-  isTraceNetwork?: boolean
-  isTraceMemory?: boolean
-}
-
-export interface PageOpts {
-  route: string
-  options: any
-}
-
-export function activityPage(): PageOpts {
-  const pagesList = getCurrentPages()
-    .map((item: any) => {
-      const obj = item || {}
-      return obj
-    })
-    .reverse()
-  const [curr] = pagesList
-  return curr || {}
-}
-
-export class Logs {
+export class CollectLogs {
   public oriRequest: any
+  public pages: any
   public logList: Array<ReportOpts>
   public systemInfo: any
   public initConfig: InitConfig
   public vueApp: any
+  public Vue: any
 
-  constructor() {
+  constructor(Vue: any) {
+    Vue.mixin({
+      onShow() {
+        console.log('自己创建的mixin onShow')
+      },
+      onHide() {
+        console.log('自己创建的mixin onHide')
+      },
+      onUnload() {
+        console.log('自己创建的mixin onUnload')
+      }
+    })
+
     this.oriRequest = wx.request
     this.logList = []
+    this.pages = {}
     this.systemInfo = wx.getSystemInfoSync()
-    this.initConfig = {}
+    this.initConfig = {
+      customFields: {}
+    }
 
     // 监听component的methods
     // proxyComponentsTapEvents(this)
-    // this.init()
   }
 
   public init(config: InitConfig) {
     const {
       uniqueId,
-      platform,
+      // platform,
+      customFields,
       isShowLog = false,
       isOnLifecycle = false,
       isOnCaptureScreen = false,
@@ -94,8 +63,18 @@ export class Logs {
       isTraceNetwork = false,
       isTraceMemory = false
     } = config
-    if (!platform) { throw new Error('缺少必要参数「platform」,需要传入所采集的平台类型') }
+    this.pages = uniPages.pages
+
+    // if (!platform) { throw new Error('缺少必要参数「platform」,需要传入所采集的平台类型') }
     // if (!openId) openId = 'unknown'
+
+    // 校验字段
+    const [validate, error] = validateParams({
+      customFields
+    })
+    if (validate) {
+      throw new Error(error)
+    }
 
     this.vueApp = {}
     this.initConfig = {
@@ -108,6 +87,8 @@ export class Logs {
       isTraceMemory
     }
 
+    // console.log输出
+    consoleLog(this)
     // 点击事件
     if (isOnTapEvent) { proxyComponentsTapEvents(this) }
     // 截屏事件
@@ -117,7 +98,7 @@ export class Logs {
     // 网络状态
     if (isTraceNetwork) { onNetwork(this) }
     // proxyPageEvents(this)
-    rewritePage(this)
+    // rewritePage(this)
 
     // 是否页面/应用的开启生命周期监听
     if (isOnLifecycle) {
@@ -132,7 +113,7 @@ export class Logs {
     // this.initConfig = config
   }
 
-  public async report(obj: ReportOpts, logs: Logs = this) {
+  public async report(obj: ReportOpts, logs: CollectLogs = this) {
     return new Promise((resolve, reject) => {
       reportLog(obj, logs)
         .then((data: any) => {

@@ -1,6 +1,6 @@
-import { Logs } from './index'
+import { CollectLogs } from './index'
 
-export function proxyRequest(logs: Logs) {
+export function proxyRequest(logs: CollectLogs) {
   Object.defineProperty(wx, 'request', {
     configurable: true,
     enumerable: true,
@@ -20,7 +20,7 @@ export function proxyRequest(logs: Logs) {
         console.log('success', sucsArgs)
         const [success] = sucsArgs
         success.reqQuery = data
-        if (!isReportRequest) logs.successResponse(success, args)
+        if (!isReportRequest) { logs.successResponse(success, args) }
         originSuccess.call(this, ...sucsArgs)
       }
 
