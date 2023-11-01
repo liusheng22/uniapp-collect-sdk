@@ -1,4 +1,4 @@
-import { Logs } from 'uni-collect-ts'
+import { CollectLogs } from 'uni-collect-ts'
 import Vue from 'vue'
 import App from './App'
 import './uni.promisify.adaptor'
@@ -7,11 +7,11 @@ Vue.config.productionTip = false
 
 App.mpType = 'app'
 
-const uniTracker = new Logs('https://fastmock.site/#/project/6345ad1b8161c2b06ef04f23db6c1b1e')
-uniTracker.init({
+const collectLogs = new CollectLogs(Vue)
+collectLogs.init({
   platform: 'test-platform',
   uniqueId: 'test123',
-  isShowLog: true,
+  isShowLog: false,
   isOnLifecycle: true,
   isTraceRoute: true,
   isTraceNetwork: true,
@@ -19,6 +19,11 @@ uniTracker.init({
   isOnTapEvent: true,
   isOnCaptureScreen: true
 })
+
+// 读取pages.json页面
+// // eslint-disable-next-line import/order, no-useless-escape
+// import pages from 'uni-pages?{\"type\":\"style\"}'
+// console.log('🚀 ~ file: main.js:25 ~ pages:', pages)
 
 const app = new Vue({
   ...App

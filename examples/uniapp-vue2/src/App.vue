@@ -1,17 +1,47 @@
 <script>
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
+			console.log('----- App Launch -----')
 		},
 		onShow: function() {
-			console.log('App Show')
+			console.log('----- App Show -----')
 		},
 		onHide: function() {
-			console.log('App Hide')
+      console.log('----- App Hide -----')
 		}
 	}
 </script>
 
 <style>
-	/*每个页面公共css */
+.button-default {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #000;
+  display: inline-block;
+  font-size: 14px;
+  height: 40px;
+  line-height: 40px;
+  /* margin: 0 10px; */
+  width: 90%;
+  padding: 0 15px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin: 20rpx 0;
+}
+
+.center {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20rpx 0;
+}
 </style>

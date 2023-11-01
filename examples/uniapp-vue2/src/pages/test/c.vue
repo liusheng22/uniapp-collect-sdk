@@ -14,8 +14,14 @@ export default {
   data() {
     return {}
   },
-  onLoad(options) {
-    console.log('aaaa', this.appid)
+  // onLoad(options) {
+  //   // console.log('ccc', this.appid)
+  // },
+  // 分享
+  onShareAppMessage() {
+    return {
+      title: 'c 页面',
+    }
   },
   // 方法
   methods: {
