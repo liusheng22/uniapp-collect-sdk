@@ -1,7 +1,9 @@
 import { onPageHide } from './onPage'
+import { requestHeartBeat } from './report'
 import { CollectLogs } from './index'
 import { activityPage, getUuid, sleep } from '@/utils'
 import { isObject } from '@/utils/data-type'
+import { setUuid } from '@/utils/uuid'
 
 export function proxyComponentsTapEvents(logs: CollectLogs) {
   const oldComponent = Component
@@ -13,39 +15,46 @@ export function proxyComponentsTapEvents(logs: CollectLogs) {
       })
     }
 
-    let isNewLoad = true
+    const isNewLoad = true
     let showTime: any
     let hideTime: any
 
-    const oldLoad = componentOptions.methods.onLoad
-    if (oldLoad) {
-      componentOptions.methods['onLoad'] = function (args: any) {
-        console.log('onLoad====>', activityPage().route, args)
-        // todo: 执行页面浏览上报
-        logs.report({
-          id: getUuid(),
-          eventType: 'page_view',
-          errorInfo: activityPage().route,
-          loadOptions: activityPage().options
-        })
-        isNewLoad = false
-        oldLoad.apply(this, arg)
-      }
-    }
+    // const oldLoad = componentOptions.methods.onLoad
+    // if (oldLoad) {
+    //   componentOptions.methods['onLoad'] = function (args: any) {
+    //     console.log('onLoad====>', activityPage().route, args)
+    //     // todo: 执行页面浏览上报
+    //     logs.reportLog({
+    //       id: getUuid(),
+    //       eventType: 'page_view',
+    //       errorInfo: activityPage().route,
+    //       loadOptions: activityPage().options
+    //     })
+    //     isNewLoad = false
+    //     oldLoad.apply(this, arg)
+    //   }
+    // }
 
     const oldShow = componentOptions.methods.onShow
     if (oldShow) {
       componentOptions.methods['onShow'] = async function () {
         await sleep(300)
-        if (isNewLoad) {
-          const path = activityPage().route
-          console.log('oldShow====>', path)
-          showTime = Date.now()
-        } else {
-          isNewLoad = true
-          console.log('oldShow====>>>', Date.now())
-          showTime = Date.now()
-        }
+        console.log('onShow====>', activityPage().route)
+        logs.reportLog({
+          id: setUuid(),
+          eventType: 'page_view',
+          errorInfo: activityPage().route,
+          loadOptions: activityPage().options
+        })
+        // if (isNewLoad) {
+        //   const path = activityPage().route
+        //   console.log('oldShow====>', path)
+        //   showTime = Date.now()
+        // } else {
+        //   isNewLoad = true
+        //   console.log('oldShow====>>>', Date.now())
+        //   showTime = Date.now()
+        // }
         oldShow.apply(this, arg)
       }
     }
@@ -53,18 +62,21 @@ export function proxyComponentsTapEvents(logs: CollectLogs) {
     const oldHide = componentOptions.methods.onHide
     if (oldHide) {
       componentOptions.methods['onHide'] = function () {
-        const path = activityPage().route
-        hideTime = Date.now()
-        const time: any = ((hideTime - showTime) / 1000).toFixed(2)
-        console.log('onHide====>', {
-          path,
-          time
-        })
-        logs.report({
-          errorType: 'stayTime',
-          errorInfo: `${time }s`
-          // params: activityPage().options
-        })
+        console.log('onHide====>', activityPage().route)
+        requestHeartBeat(logs)
+
+        // const path = activityPage().route
+        // hideTime = Date.now()
+        // const time: any = ((hideTime - showTime) / 1000).toFixed(2)
+        // console.log('onHide====>', {
+        //   path,
+        //   time
+        // })
+        // logs.reportLog({
+        //   errorType: 'stayTime',
+        //   errorInfo: `${time }s`
+        //   // params: activityPage().options
+        // })
         oldHide.apply(this, arg)
       }
     }
@@ -72,18 +84,20 @@ export function proxyComponentsTapEvents(logs: CollectLogs) {
     const old = componentOptions.methods.onUnload
     if (old) {
       componentOptions.methods['onUnload'] = function () {
-        const path = activityPage().route
-        hideTime = Date.now()
-        const time: any = ((hideTime - showTime) / 1000).toFixed(2)
-        console.log('onUnload====>', {
-          path,
-          time
-        })
-        logs.report({
-          errorType: 'stayTime',
-          errorInfo: `${time }s`
-          // params: activityPage().options
-        })
+        console.log('onUnload====>', activityPage().route)
+
+        // const path = activityPage().route
+        // hideTime = Date.now()
+        // const time: any = ((hideTime - showTime) / 1000).toFixed(2)
+        // console.log('onUnload====>', {
+        //   path,
+        //   time
+        // })
+        // logs.reportLog({
+        //   errorType: 'stayTime',
+        //   errorInfo: `${time }s`
+        //   // params: activityPage().options
+        // })
         old.apply(this, arg)
       }
     }
@@ -183,7 +197,7 @@ export function clickProxy(options: any, method: any, logs: CollectLogs) {
         && isClick(eventType)
         // && tapId
         // && tapType
-        && logs.report({ errorInfo: tapsInfo }),
+        && logs.reportLog({ errorInfo: tapsInfo }),
       fn && fn.apply(this, arg)
     )
   }

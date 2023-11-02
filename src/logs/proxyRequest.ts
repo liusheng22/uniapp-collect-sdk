@@ -28,7 +28,7 @@ export function proxyRequest(logs: CollectLogs) {
         console.log('fail', failArgs)
         originFail.call(this, ...failArgs)
       }
-      return logs.oriRequest.apply(this, arg)
+      return logs.request.apply(this, arg)
     }
   })
 }

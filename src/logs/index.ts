@@ -11,13 +11,14 @@ import {
 import { proxyComponentsTapEvents, proxyPageEvents } from './lifecycle'
 import { onApp } from './onApp'
 import { onError } from './onError'
-import { reportLog } from './report'
+import { requestReportLog } from './report'
 import { ReportOpts, InitConfig, Success, ResConfig } from '../types'
+import { wxb } from '@/constants'
 import { consoleLog } from '@/utils/console-log'
 import { validateParams } from '@/utils/validate'
 
 export class CollectLogs {
-  public oriRequest: any
+  public request: any
   public pages: any
   public logList: Array<ReportOpts>
   public systemInfo: any
@@ -28,17 +29,17 @@ export class CollectLogs {
   constructor(Vue: any) {
     Vue.mixin({
       onShow() {
-        console.log('自己创建的mixin onShow')
+        // console.log('自己创建的mixin onShow')
       },
       onHide() {
-        console.log('自己创建的mixin onHide')
+        // console.log('自己创建的mixin onHide')
       },
       onUnload() {
-        console.log('自己创建的mixin onUnload')
+        // console.log('自己创建的mixin onUnload')
       }
     })
 
-    this.oriRequest = wx.request
+    this.request = wxb.request
     this.logList = []
     this.pages = {}
     this.systemInfo = wx.getSystemInfoSync()
@@ -113,9 +114,9 @@ export class CollectLogs {
     // this.initConfig = config
   }
 
-  public async report(obj: ReportOpts, logs: CollectLogs = this) {
+  public async reportLog(obj: ReportOpts, logs: CollectLogs = this) {
     return new Promise((resolve, reject) => {
-      reportLog(obj, logs)
+      requestReportLog(obj, logs)
         .then((data: any) => {
           resolve(data)
         })
@@ -123,8 +124,19 @@ export class CollectLogs {
           reject(err)
         })
     })
-    // return reportLog(obj, logs)
   }
+
+  // public async reportHeartBeat() {
+  //   const { initConfig } = this
+  //   const { uniqueId, platform } = initConfig
+  //   const res = await this.reportLog({
+  //     eventType: 'heart_beat',
+  //     uniqueId,
+  //     platform,
+  //     errorInfo: 'heart_beat'
+  //   })
+  //   return res
+  // }
 
   public successResponse(success: Success, config: ResConfig) {
     console.log('config =>', config)
@@ -133,7 +145,7 @@ export class CollectLogs {
     const { statusCode, reqQuery, data: resData } = success
     if (statusCode !== 200) {
       console.log('resData =>', resData)
-      this.report({
+      this.reportLog({
         errorInfo: resData,
         apiQuery: reqQuery
       })

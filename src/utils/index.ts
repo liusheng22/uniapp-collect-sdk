@@ -38,18 +38,6 @@ export function activityPage(): PageOpts {
   return curr || {}
 }
 
-export const getUuid = () => {
-  const str = 'xxxxxxxx-xxxx-yxyx-xyxy-xxxxxxxxxxxx'.replace(
-    /[xy]/g,
-    function (c) {
-      const r = (Math.random() * 16) | 0,
-        v = c === 'x' ? r : (r & 0x3) | 0x8
-      return v.toString(16)
-    }
-  )
-  return str.replace(/-/g, '')
-}
-
 export function sleep(time = 1500): Promise<void> {
   return new Promise<void>((resolve) => setTimeout(resolve, time))
 }

@@ -37,7 +37,7 @@ export default {
   methods: {
     link(url) {
       uni.navigateTo({
-        url
+        url: `${url}?b=2`,
       })
     },
     noop() {

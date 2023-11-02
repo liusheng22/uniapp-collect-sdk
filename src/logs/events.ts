@@ -5,7 +5,7 @@ import { formatTime } from '@/utils/index'
 // 监听用户截屏事件
 export function onUserCaptureScreen(logs: CollectLogs) {
   wxb.onUserCaptureScreen(() => {
-    logs.report({
+    logs.reportLog({
       errorType: 'captureScreen',
       errorInfo: '用户截屏事件捕获'
     })
@@ -37,11 +37,11 @@ export function onMemory(logs: CollectLogs) {
       wxb.setStorageSync('unusualLogList', logs.logList)
     } else {
       // 非Android手机直接上报
-      logs.report({
+      logs.reportLog({
         errorType: 'memory',
         errorInfo
       })
-      // logs.report({
+      // logs.reportLog({
       //   errorType: 'logList',
       //   isClearLog: true
       // })
@@ -85,7 +85,7 @@ export function onNetwork(logs: CollectLogs) {
         pagePath
       })
     } else {
-      logs.report({
+      logs.reportLog({
         errorType: 'networkState',
         errorInfo
       })
@@ -93,7 +93,7 @@ export function onNetwork(logs: CollectLogs) {
       wxb.removeStorageSync('networkUnusualLogInfo')
       // 对上一次网络异常，可能造成的上报失败进行补上报
       networkInfo
-        && logs.report({
+        && logs.reportLog({
           errorType: 'networkState',
           errorInfo: networkInfo
         })
@@ -128,19 +128,19 @@ export function lastUnusualReport(logs: CollectLogs) {
   const logList = wxb.getStorageSync('unusualLogList')
   const networkInfo = wxb.getStorageSync('networkUnusualLogInfo')
 
-  // 对上一次内存溢出，造成闪退存储的日志记录进行上报
+  // 对上一次内存溢出，造成闪退存储的日志记录进行上报
   if (logList && logList.length) {
     logs.logList = logList
-    // logs.report({
+    // logs.reportLog({
     //   errorType: 'logList',
     //   isClearLog: true
     // }).then(() => wxb.removeStorageSync('unusualLogList'))
   }
 
-  // 对上一次内存溢出，造成闪退存储的内存错误进行上报
+  // 对上一次内存溢出，造成闪退存储的内存错误进行上报
   if (errorInfo && typeof errorInfo === 'string') {
     logs
-      .report({
+      .reportLog({
         errorType: 'memory',
         errorInfo
       })
@@ -150,7 +150,7 @@ export function lastUnusualReport(logs: CollectLogs) {
   // 对上一次网络异常，可能造成的上报失败进行补上报
   networkInfo
     && logs
-      .report({
+      .reportLog({
         errorType: 'networkState',
         errorInfo: networkInfo
       })

@@ -10,7 +10,7 @@ export function onApp(logs: CollectLogs) {
     onAppHideReport(logs)
   })
   wxb.onPageNotFound((errorInfo: any) => {
-    logs.report({
+    logs.reportLog({
       errorType: 'notFount',
       errorInfo
     })
@@ -46,7 +46,7 @@ export function onAppHideReport(logs: CollectLogs) {
   logs.vueApp.leavePages = activityPage().route || 'loading'
   logs.vueApp.leaveDate = formatTime()
   const { seconds, entryPages, leavePages, entryDate, leaveDate } = logs.vueApp
-  logs.report({
+  logs.reportLog({
     errorType: 'stayTime',
     errorInfo: { seconds, entryPages, leavePages, entryDate, leaveDate }
   })

@@ -1,7 +1,9 @@
 import { ReportOpts } from '../types'
 import { CollectLogs } from '.'
+import { apiUrls } from '@/constants/api'
 import { activityPage, getPageInfo } from '@/utils'
 import { log } from '@/utils/console-log'
+import { getUuid } from '@/utils/uuid'
 
 /**
  * 直接上报相关错误、异常、日志信息
@@ -12,8 +14,9 @@ import { log } from '@/utils/console-log'
  * isClearLog <Boolean> 上报完后是否清除logList
  * @param {CollectLogs} logs
  */
-export function reportLog(
+export function requestReportLog(
   {
+    id = '',
     eventType,
     errorType = 'logInfo',
     errorInfo = '',
@@ -58,6 +61,10 @@ export function reportLog(
     basicVersion: SDKVersion
   }
 
+  if (!eventType) {
+    return Promise.reject(new Error('eventType is required'))
+  }
+
   uniqueId = uniqueId || ('' as string)
   // eslint-disable-next-line
   requestId = `${Date.now()}_${uniqueId.padStart(28, "_").slice(22)}`;
@@ -81,6 +88,7 @@ export function reportLog(
     page_id: pagePath
   }
   const baseParams = {
+    id,
     distinct_id: uniqueId,
     event: eventType,
     project: 'product_basic',
@@ -94,8 +102,9 @@ export function reportLog(
   log('上报数据:', baseParams, properties)
 
   return new Promise((resolve, reject) => {
-    logs.oriRequest({
-      url: 'https://www.fastmock.site/mock/6345ad1b8161c2b06ef04f23db6c1b1e/mock/post',
+    logs.request({
+      // url: 'https://www.fastmock.site/mock/6345ad1b8161c2b06ef04f23db6c1b1e/mock/post',
+      url: apiUrls.report,
       method: 'POST',
       header: { isReportRequest: 1 },
       // data: { ...info, errorType, errorInfo },
@@ -103,5 +112,23 @@ export function reportLog(
       success: () => resolve({}),
       fail: () => reject(new Error('上报失败'))
     })
+  })
+}
+
+export const requestHeartBeat = (logs: CollectLogs) => {
+  logs.request({
+    url: apiUrls.heartBeat,
+    method: 'GET',
+    header: { isReportRequest: 1 },
+    data: {
+      eventIds: getUuid(),
+      reportType: 1
+    },
+    success: () => {
+      console.log('心跳上报成功')
+    },
+    fail: () => {
+      console.log('心跳上报失败')
+    }
   })
 }

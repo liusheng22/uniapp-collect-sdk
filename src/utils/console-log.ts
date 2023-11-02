@@ -13,12 +13,4 @@ export function consoleLog(logs: CollectLogs) {
       oldLog.apply(this, arg)
     }
   }
-
-  // const oldConsoleLog = console.log
-  // console.log = function (...arg) {
-  //   const { isShowLog } = logs.initConfig
-  //   if (isShowLog) {
-  //     oldConsoleLog.apply(this, arg)
-  //   }
-  // }
 }

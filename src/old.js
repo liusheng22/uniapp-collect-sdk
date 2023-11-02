@@ -583,8 +583,8 @@ class Logs {
     let openId = reportOpenId || this.initConfig.openId || storeOpenId || 'unknown'
     let platform = reportPlatform || this.initConfig.platform || 'unknown'
     let { SDKVersion = '无', version = '无', system = '无', model = '无', brand = '无' } = this.systemInfo
-    let curr = getCurrentPages() || []
-    let pagePath = 'loading'
+    let curr =  || []
+    let pagePath = 'loadingetCurrentPages()g'
     let params = ''
     let options = {}
     if (curr.length) {

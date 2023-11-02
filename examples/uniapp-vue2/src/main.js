@@ -12,7 +12,7 @@ collectLogs.init({
   platform: 'test-platform',
   uniqueId: 'test123',
   isShowLog: false,
-  isOnLifecycle: true,
+  isOnLifecycle: false,
   isTraceRoute: true,
   isTraceNetwork: true,
   isTraceMemory: true,

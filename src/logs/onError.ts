@@ -7,11 +7,11 @@ import { wxb } from '@/constants/index'
  */
 export function onError(logs: CollectLogs) {
   wxb.onError((errorInfo: any) => {
-    logs.report({
+    logs.reportLog({
       errorType: 'onError',
       errorInfo
     })
-    // logs.report({
+    // logs.reportLog({
     //   errorType: 'logList',
     //   isClearLog: true
     // })

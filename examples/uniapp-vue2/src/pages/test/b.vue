@@ -8,8 +8,6 @@
 
 <script>
 export default {
-  components: {},
-  mixins: [],
   // 数据状态
   data() {
     return {}
@@ -27,7 +25,8 @@ export default {
   methods: {
     link(url) {
       uni.navigateTo({
-        url
+        // url
+        url: `${url}?c=3`,
       })
     }
   }
