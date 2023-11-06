@@ -16,12 +16,6 @@
     methods: {
       reportClick(params) {
         this.$collectLogs.reportLog(params)
-
-        let pages = getCurrentPages();
-        let page = pages[pages.length - 1];
-        let webView = page.$getAppWebview();
-        let titleNView = webView.getStyle().titleNView;
-        const { titleText } = titleNView || {}
       }
     }
   }
