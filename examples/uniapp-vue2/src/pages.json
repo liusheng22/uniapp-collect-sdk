@@ -17,12 +17,6 @@
       "style": {
         "navigationBarTitleText": "c页面"
       }
-    },
-    {
-      "path": "pages/index/index",
-      "style": {
-        "navigationBarTitleText": "uni-app"
-      }
     }
   ],
   "globalStyle": {

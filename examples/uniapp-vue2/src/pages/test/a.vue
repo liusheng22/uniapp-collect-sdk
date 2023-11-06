@@ -7,10 +7,17 @@
     <button  data-logs="errorInfo" data-type="errorType" @tap="noop" style="margin:30rpx 0;">点击测试</button>
     <div data-logs="errorInfo" data-type="errorType" @tap="noop" style="margin:30rpx 0;">点击测试</div>
     <div class="test" @tap="noop" style="margin:30rpx 0;">点击测试</div>
+    <div @tap="customClick" style="margin:30rpx 0;">自定义点击测试</div>
+
+    <custom-button data-logs="自定义事件类型" data-type="custom-type" @tap="customClick">自定义埋点点击类型</custom-button>
+    <custom-button data-logs="自动采集点击" @tap="customClick">埋点点击</custom-button>
+    <custom-button @tap="customClick">自定义点击</custom-button>
   </div>
 </template>
 
 <script>
+import { collectLogs } from './logs'
+
 export default {
   components: {},
   mixins: [],
@@ -42,6 +49,14 @@ export default {
     },
     noop() {
       // console.log('noop')
+    },
+    customClick() {
+      collectLogs.reportLog({
+        eventType: 'custom-click'
+      })
+      // this.$collectLogs.reportLog({
+      //   eventType: 'custom-click'
+      // })
     }
   }
 }
