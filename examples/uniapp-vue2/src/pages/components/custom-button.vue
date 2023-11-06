@@ -1,9 +1,9 @@
 <template>
-  <div class="center">
+  <view class="center">
     <button>
       <slot />
     </button>
-  </div>
+  </view>
 </template>
 
 <script>
