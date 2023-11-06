@@ -14,10 +14,13 @@ export interface ReportOpts {
   // eventType: string
   eventType?: string
   loadOptions?: any
-  id?: string
+  id?: string,
+  referer?: string
+  loadOptions?: any
+  extendFields?: any
 
   errorType?: string
-  errorInfo: any
+  errorInfo?: any
   params?: any
   requestId?: string
   userId?: string
@@ -46,5 +49,6 @@ export interface InitConfig {
 
 export interface PageOpts {
   route: string
-  options: any
+  options: any,
+  __displayReporter: any
 }

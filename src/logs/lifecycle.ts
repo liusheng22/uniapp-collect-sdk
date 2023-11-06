@@ -1,8 +1,8 @@
 import { onPageHide } from './onPage'
-import { requestHeartBeat } from './report'
+import { requestHeartBeat, requestReportLog } from './report'
 import { CollectLogs } from './index'
-import { activityPage, getUuid, sleep } from '@/utils'
-import { isObject } from '@/utils/data-type'
+import { activityPage, sleep } from '@/utils'
+import { isObject, isBoolean } from '@/utils/data-type'
 import { setUuid } from '@/utils/uuid'
 
 export function proxyComponentsTapEvents(logs: CollectLogs) {
@@ -18,19 +18,19 @@ export function proxyComponentsTapEvents(logs: CollectLogs) {
     const isNewLoad = true
     let showTime: any
     let hideTime: any
+    let previousPage = ''
 
     // const oldLoad = componentOptions.methods.onLoad
     // if (oldLoad) {
     //   componentOptions.methods['onLoad'] = function (args: any) {
     //     console.log('onLoad====>', activityPage().route, args)
-    //     // todo: 执行页面浏览上报
-    //     logs.reportLog({
-    //       id: getUuid(),
-    //       eventType: 'page_view',
-    //       errorInfo: activityPage().route,
-    //       loadOptions: activityPage().options
-    //     })
-    //     isNewLoad = false
+    //     // logs.reportLog({
+    //     //   id: getUuid(),
+    //     //   eventType: 'page_view',
+    //     //   errorInfo: activityPage().route,
+    //     //   loadOptions: activityPage().options
+    //     // })
+    //     // isNewLoad = false
     //     oldLoad.apply(this, arg)
     //   }
     // }
@@ -40,21 +40,15 @@ export function proxyComponentsTapEvents(logs: CollectLogs) {
       componentOptions.methods['onShow'] = async function () {
         await sleep(300)
         console.log('onShow====>', activityPage().route)
-        logs.reportLog({
+        // logs.reportLog({
+        console.log('🚀 ~ file: lifecycle.ts:50 ~ previousPage:', previousPage)
+        await requestReportLog({
+          referer: previousPage,
           id: setUuid(),
-          eventType: 'page_view',
-          errorInfo: activityPage().route,
-          loadOptions: activityPage().options
-        })
-        // if (isNewLoad) {
-        //   const path = activityPage().route
-        //   console.log('oldShow====>', path)
-        //   showTime = Date.now()
-        // } else {
-        //   isNewLoad = true
-        //   console.log('oldShow====>>>', Date.now())
-        //   showTime = Date.now()
-        // }
+          eventType: 'page_view'
+        }, logs)
+        previousPage = activityPage().route
+
         oldShow.apply(this, arg)
       }
     }
@@ -65,18 +59,6 @@ export function proxyComponentsTapEvents(logs: CollectLogs) {
         console.log('onHide====>', activityPage().route)
         requestHeartBeat(logs)
 
-        // const path = activityPage().route
-        // hideTime = Date.now()
-        // const time: any = ((hideTime - showTime) / 1000).toFixed(2)
-        // console.log('onHide====>', {
-        //   path,
-        //   time
-        // })
-        // logs.reportLog({
-        //   errorType: 'stayTime',
-        //   errorInfo: `${time }s`
-        //   // params: activityPage().options
-        // })
         oldHide.apply(this, arg)
       }
     }
@@ -85,19 +67,8 @@ export function proxyComponentsTapEvents(logs: CollectLogs) {
     if (old) {
       componentOptions.methods['onUnload'] = function () {
         console.log('onUnload====>', activityPage().route)
+        requestHeartBeat(logs)
 
-        // const path = activityPage().route
-        // hideTime = Date.now()
-        // const time: any = ((hideTime - showTime) / 1000).toFixed(2)
-        // console.log('onUnload====>', {
-        //   path,
-        //   time
-        // })
-        // logs.reportLog({
-        //   errorType: 'stayTime',
-        //   errorInfo: `${time }s`
-        //   // params: activityPage().options
-        // })
         old.apply(this, arg)
       }
     }
@@ -172,32 +143,44 @@ export function clickProxy(options: any, method: any, logs: CollectLogs) {
   options[method] = function (...arg: any) {
     const tapsInfo = {
       tapType: '',
-      tapId: ''
+      tapText: ''
     }
+    const {
+      windowHeight,
+      windowWidth
+    } = logs.systemInfo
     let eventType = ''
+    let extendFields = {}
     const [args] = arg
     if (isObject(args)) {
-      const { currentTarget = {} } = args
+      const { currentTarget = {}, detail } = args
       const { dataset = {} } = currentTarget
-      const { type, tapid } = dataset
+      const { x, y } = detail || {}
+      const { type, logs } = dataset
       eventType = args.type
-      tapsInfo.tapType = type
-      tapsInfo.tapId = tapid
+      tapsInfo.tapType = isBoolean(type) ? '' : type
+      tapsInfo.tapText = isBoolean(logs) ? '' : logs
+
+      // 拓展信息字段
+      extendFields = {
+        abscissa: x,
+        ordinate: y,
+        avail_width: windowWidth,
+        avail_height: windowHeight,
+        button_title: tapsInfo.tapText
+      }
     }
-    const { tapType, tapId } = tapsInfo
-
-    // console.log('-----tapsInfo----', tapsInfo)
-
-    // 1、DOM标签中未设置「data-type」属性时，tapType为undefined
-    // 2、DOM标签中设置「data-type=""」为空时，tapType为true
-    // if (typeof tapType === 'boolean' || !tapType) return null
+    const { tapType, tapText } = tapsInfo
 
     return (
       eventType
         && isClick(eventType)
-        // && tapId
+        && tapText
         // && tapType
-        && logs.reportLog({ errorInfo: tapsInfo }),
+        && requestReportLog({
+          eventType: tapType || 'button_click',
+          extendFields
+        }, logs),
       fn && fn.apply(this, arg)
     )
   }

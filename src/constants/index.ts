@@ -1,1 +1,1 @@
-export const wxb = wx || uni
+export const wxb = uni || wx || tt

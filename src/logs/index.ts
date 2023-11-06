@@ -42,7 +42,7 @@ export class CollectLogs {
     this.request = wxb.request
     this.logList = []
     this.pages = {}
-    this.systemInfo = wx.getSystemInfoSync()
+    this.systemInfo = wxb.getSystemInfoSync()
     this.initConfig = {
       customFields: {}
     }
@@ -125,18 +125,6 @@ export class CollectLogs {
         })
     })
   }
-
-  // public async reportHeartBeat() {
-  //   const { initConfig } = this
-  //   const { uniqueId, platform } = initConfig
-  //   const res = await this.reportLog({
-  //     eventType: 'heart_beat',
-  //     uniqueId,
-  //     platform,
-  //     errorInfo: 'heart_beat'
-  //   })
-  //   return res
-  // }
 
   public successResponse(success: Success, config: ResConfig) {
     console.log('config =>', config)

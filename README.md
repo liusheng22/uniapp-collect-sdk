@@ -1,10 +1,11 @@
 ### 采集指标
 - userId group_account project_account
-- userId
 - role group_account project_account
 - 角色不需要 租户一定有 项目不一定有
-- 设备信息（ios）  header(ip)
+- APP版本   设备信息（ios）  header(ip)
 - name
+- button_title 业务方进行区分
+- 点击按钮 上报时长
 
 <!--
 page_id "/about"
@@ -15,6 +16,7 @@ projectName
 phone
 -->
 
+userName accountName projectName phone
 
 
 ### 采集方式

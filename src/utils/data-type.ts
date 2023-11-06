@@ -10,6 +10,10 @@ const isFunction = (fn: any) => {
   return Object.prototype.toString.call(fn) === '[object Function]'
 }
 
+const isBoolean = (bool: any) => {
+  return Object.prototype.toString.call(bool) === '[object Boolean]'
+}
+
 /**
  * @description 根据传入的参数，返回对应的类型
  * @param {*} obj
@@ -34,5 +38,6 @@ export {
   isObject,
   isArray,
   isFunction,
+  isBoolean,
   type
 }

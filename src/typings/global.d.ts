@@ -1,6 +1,7 @@
 // 全局兼容uni
 declare let uni: any
 declare let wx: any
+declare let tt: any
 declare let getApp: any
 declare let Component: any
 declare let Page: any

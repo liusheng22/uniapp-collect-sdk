@@ -1,9 +1,11 @@
 import { ReportOpts } from '../types'
 import { CollectLogs } from '.'
+import { wxb } from '@/constants'
 import { apiUrls } from '@/constants/api'
 import { activityPage, getPageInfo } from '@/utils'
 import { log } from '@/utils/console-log'
-import { getUuid } from '@/utils/uuid'
+import { formatLibType } from '@/utils/params'
+import { getUuid, setUuid } from '@/utils/uuid'
 
 /**
  * 直接上报相关错误、异常、日志信息
@@ -14,19 +16,28 @@ import { getUuid } from '@/utils/uuid'
  * isClearLog <Boolean> 上报完后是否清除logList
  * @param {CollectLogs} logs
  */
-export function requestReportLog(
-  {
+export async function requestReportLog(
+  opts: ReportOpts,
+  logs: CollectLogs
+) {
+
+  const {
     id = '',
     eventType,
+    referer,
+
     errorType = 'logInfo',
-    errorInfo = '',
-    requestId = '',
     userId = '',
     reportPlatform = '',
     apiQuery = ''
-  }: ReportOpts,
-  logs: CollectLogs
-) {
+  } = opts
+  let {
+    extendFields,
+    requestId = '',
+    errorInfo = ''
+  } = opts
+  extendFields = extendFields || {}
+
   // 如果采集到到是上报接口，则停止执行，否则会死循环
   // if (typeof errorInfo === 'string' && ~errorInfo.indexOf(this.collectionApiPath)) return
   // 可以不必纠结于「errorInfo」的类型是传入objet还是string
@@ -37,32 +48,36 @@ export function requestReportLog(
   const { platform: currPlatform } = initConfig
   uniqueId = userId || uniqueId || 'unknown'
   const platform = reportPlatform || currPlatform || 'unknown'
+  const { networkType } = await wxb.getNetworkType()
   const {
-    SDKVersion = '无',
-    version = '无',
-    system = '无',
-    model = '无',
-    brand = '无'
+    brand,
+    model,
+    platform: osPlatform,
+    system,
+    screenWidth,
+    screenHeight,
+    wifiEnabled,
+    deviceId,
+    deviceOrientation,
+    osName,
+    uniPlatform
   } = logs.systemInfo
-  const pagePath = activityPage().route || 'loading'
-  let params = ''
-  const options = activityPage().options || {}
-  activityPage().route
-  activityPage().options
-  params = JSON.stringify(options)
-  const info = {
-    uniqueId,
-    platform,
-    pagePath,
-    params,
-    apiQuery,
-    requestId,
-    systemInfo: `引擎版本号:${version}, 操作系统:${system}, 手机型号:${model}, 手机品牌: ${brand}`,
-    basicVersion: SDKVersion
-  }
+  const { route, options, __displayReporter } = activityPage()
+  const query = options || __displayReporter?.query || {}
+  const pagePath = route || 'unknown'
+  const pageQuery = JSON.stringify(query)
+  // const info = {
+  //   uniqueId,
+  //   platform,
+  //   pagePath,
+  //   apiQuery,
+  //   requestId,
+  //   systemInfo: `引擎版本号:${version}, 操作系统:${system}, 手机型号:${model}, 手机品牌: ${brand}`,
+  //   basicVersion: SDKVersion
+  // }
 
   if (!eventType) {
-    return Promise.reject(new Error('eventType is required'))
+    return Promise.resolve({})
   }
 
   uniqueId = uniqueId || ('' as string)
@@ -74,8 +89,18 @@ export function requestReportLog(
   // this.logOutput(errorType, errorInfo)
   // if (!this.collectionApi) return
 
+  const libType = formatLibType(uniPlatform, osName)
+
+  const baseParams = {
+    // id: setUuid(),
+    id,
+    distinct_id: uniqueId,
+    event: eventType,
+    project: 'product_basic',
+    type: 'track'
+  }
   const lib = {
-    lib: 'UNIAPP',
+    lib: libType,
     lib_detail: '',
     lib_method: 'AUTO',
     lib_version: 'v2.0.7'
@@ -85,20 +110,31 @@ export function requestReportLog(
     project_account: '',
     group_account: '',
     page_title: navigationBarTitleText,
-    page_id: pagePath
+    page_id: pagePath,
+    page_query: pageQuery,
+    referer,
+    ...extendFields
   }
-  const baseParams = {
-    id,
-    distinct_id: uniqueId,
-    event: eventType,
-    project: 'product_basic',
-    type: 'track'
+  // 设备信息
+  const deviceInfo = {
+    manufacturer: brand,
+    model,
+    os: osPlatform,
+    os_version: system,
+    screen_height: screenHeight,
+    screen_width: screenWidth,
+    wifi: wifiEnabled,
+    network_type: networkType,
+    device_id: deviceId,
+    screen_orientation: deviceOrientation
   }
-  const data = {
+  const eventObj = {
     ...baseParams,
+    ...deviceInfo,
     properties,
     lib
   }
+
   log('上报数据:', baseParams, properties)
 
   return new Promise((resolve, reject) => {
@@ -108,7 +144,7 @@ export function requestReportLog(
       method: 'POST',
       header: { isReportRequest: 1 },
       // data: { ...info, errorType, errorInfo },
-      data,
+      data: { events: [eventObj] },
       success: () => resolve({}),
       fail: () => reject(new Error('上报失败'))
     })
