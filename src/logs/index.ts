@@ -29,13 +29,13 @@ export class CollectLogs {
   constructor(Vue: any) {
     Vue.mixin({
       onShow() {
-        // console.log('自己创建的mixin onShow')
+        console.log('自己创建的mixin onShow')
       },
       onHide() {
-        // console.log('自己创建的mixin onHide')
+        console.log('自己创建的mixin onHide')
       },
       onUnload() {
-        // console.log('自己创建的mixin onUnload')
+        console.log('自己创建的mixin onUnload')
       }
     })
 
@@ -64,7 +64,7 @@ export class CollectLogs {
       isTraceNetwork = false,
       isTraceMemory = false
     } = config
-    this.pages = uniPages.pages
+    this.pages = uniPages?.pages || []
 
     // if (!platform) { throw new Error('缺少必要参数「platform」,需要传入所采集的平台类型') }
     // if (!openId) openId = 'unknown'

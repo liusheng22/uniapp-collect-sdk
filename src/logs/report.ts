@@ -2,8 +2,9 @@ import { ReportOpts } from '../types'
 import { CollectLogs } from '.'
 import { wxb } from '@/constants'
 import { apiUrls } from '@/constants/api'
-import { activityPage, getPageInfo } from '@/utils'
+import { activityPage, getAppCurrPageView, getPageInfo } from '@/utils'
 import { log } from '@/utils/console-log'
+import { isObject } from '@/utils/data-type'
 import { formatLibType } from '@/utils/params'
 import { getUuid, setUuid } from '@/utils/uuid'
 
@@ -36,7 +37,13 @@ export async function requestReportLog(
     requestId = '',
     errorInfo = ''
   } = opts
+
+  // 校验 extendFields
   extendFields = extendFields || {}
+  if (!isObject(extendFields)) {
+    extendFields = {}
+    log('「extendFields」必须是一个对象')
+  }
 
   // 如果采集到到是上报接口，则停止执行，否则会死循环
   // if (typeof errorInfo === 'string' && ~errorInfo.indexOf(this.collectionApiPath)) return
@@ -89,6 +96,7 @@ export async function requestReportLog(
   // this.logOutput(errorType, errorInfo)
   // if (!this.collectionApi) return
 
+  const { windowHeight, windowWidth } = logs.systemInfo
   const libType = formatLibType(uniPlatform, osName)
 
   const baseParams = {
@@ -106,13 +114,17 @@ export async function requestReportLog(
     lib_version: 'v2.0.7'
   }
   const { navigationBarTitleText } = getPageInfo(logs.pages, pagePath)
+  const { titleText } = getAppCurrPageView()
+
   const properties = {
     project_account: '',
     group_account: '',
-    page_title: navigationBarTitleText,
+    page_title: navigationBarTitleText || titleText,
     page_id: pagePath,
     page_query: pageQuery,
     referer,
+    avail_width: windowWidth,
+    avail_height: windowHeight,
     ...extendFields
   }
   // 设备信息
@@ -135,6 +147,8 @@ export async function requestReportLog(
     lib
   }
 
+  console.log('--------> 上报数据:')
+  console.log(JSON.stringify(eventObj))
   log('上报数据:', baseParams, properties)
 
   return new Promise((resolve, reject) => {

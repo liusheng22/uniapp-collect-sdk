@@ -1,9 +1,12 @@
 import { CollectLogs } from './index'
 import { wxb } from '@/constants/index'
 import { formatTime } from '@/utils/index'
+import { canIUse } from '@/utils/uni-api'
 
 // 监听用户截屏事件
 export function onUserCaptureScreen(logs: CollectLogs) {
+  // 判断某个API是否可用
+  if (!canIUse('onUserCaptureScreen')) { return }
   wxb.onUserCaptureScreen(() => {
     logs.reportLog({
       errorType: 'captureScreen',
@@ -17,6 +20,8 @@ export function onUserCaptureScreen(logs: CollectLogs) {
  * @memberof CollectLogs
  */
 export function onMemory(logs: CollectLogs) {
+  // 判断某个API是否可用
+  if (!canIUse('onMemoryWarning')) { return }
   wxb.onMemoryWarning((error: any) => {
     console.log('errorInfo:', error)
     const memoryLevel = {

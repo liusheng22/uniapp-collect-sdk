@@ -145,10 +145,7 @@ export function clickProxy(options: any, method: any, logs: CollectLogs) {
       tapType: '',
       tapText: ''
     }
-    const {
-      windowHeight,
-      windowWidth
-    } = logs.systemInfo
+
     let eventType = ''
     let extendFields = {}
     const [args] = arg
@@ -165,12 +162,13 @@ export function clickProxy(options: any, method: any, logs: CollectLogs) {
       extendFields = {
         abscissa: x,
         ordinate: y,
-        avail_width: windowWidth,
-        avail_height: windowHeight,
+        // avail_width: windowWidth,
+        // avail_height: windowHeight,
         button_title: tapsInfo.tapText
       }
     }
     const { tapType, tapText } = tapsInfo
+    console.log(tapsInfo)
 
     return (
       eventType

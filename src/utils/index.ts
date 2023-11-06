@@ -44,6 +44,17 @@ export function sleep(time = 1500): Promise<void> {
 
 // 遍历找出 pages 的对象
 export const getPageInfo = (pages: any, pagePath: string) => {
+  // const page = pages[pagePath]
+  // return page || { navigationBarTitleText: '' }
+
   const page = pages[pagePath]
   return page || { navigationBarTitleText: '' }
+}
+
+export const getAppCurrPageView = () => {
+  const pages = getCurrentPages()
+  const page = pages[pages.length - 1]
+  const webView = page.$getAppWebview()
+  const titleNView = webView.getStyle().titleNView
+  return titleNView || {}
 }
