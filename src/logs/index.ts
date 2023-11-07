@@ -8,7 +8,7 @@ import {
   onNetwork,
   lastUnusualReport
 } from './events'
-import { proxyComponentsTapEvents, proxyPageEvents } from './lifecycle'
+import { proxyComponentsEvents } from './lifecycle'
 import { onApp } from './onApp'
 import { onError } from './onError'
 import { requestReportLog } from './report'
@@ -54,19 +54,18 @@ export class CollectLogs {
   public init(config: InitConfig) {
     const {
       uniqueId,
-      // platform,
       customFields,
       isShowLog = false,
-      isOnLifecycle = false,
+      isOnAppLifecycle = false,
+      isOnPageLifecycle = false,
       isOnCaptureScreen = false,
       isOnTapEvent = false,
-      isTraceRoute = false,
       isTraceNetwork = false,
       isTraceMemory = false
     } = config
     this.pages = uniPages?.pages || []
 
-    // if (!platform) { throw new Error('缺少必要参数「platform」,需要传入所采集的平台类型') }
+    // if (!uniqueId) { throw new Error('缺少必要参数「uniqueId」,需要传入所采集的平台类型') }
     // if (!openId) openId = 'unknown'
 
     // 校验字段
@@ -82,27 +81,32 @@ export class CollectLogs {
       ...config,
       uniqueId,
       isShowLog,
-      isOnLifecycle,
-      isTraceRoute,
+      isOnAppLifecycle,
+      isOnPageLifecycle,
       isTraceNetwork,
       isTraceMemory
     }
 
     // console.log输出
     consoleLog(this)
-    // 点击事件
-    if (isOnTapEvent) { proxyComponentsTapEvents(this) }
+    // 点击事件/路由事件
+    proxyComponentsEvents({
+      isOnTapEvent,
+      isOnPageLifecycle
+    }, this)
+    // if (isOnTapEvent) { proxyComponentsTapEvents(this) }
     // 截屏事件
     if (isOnCaptureScreen) { onUserCaptureScreen(this) }
     // 内存事件
     if (isTraceMemory) { onMemory(this) }
     // 网络状态
     if (isTraceNetwork) { onNetwork(this) }
+    // 页面生命周期
+    // if (isOnPageLifecycle) { proxyPageEvents(this) }
     // proxyPageEvents(this)
-    // rewritePage(this)
 
     // 是否页面/应用的开启生命周期监听
-    if (isOnLifecycle) {
+    if (isOnAppLifecycle) {
       onApp(this)
       onError(this)
       lastUnusualReport(this)

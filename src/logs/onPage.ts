@@ -2,7 +2,6 @@ import { CollectLogs } from './index'
 
 export function onPageShow(logs: CollectLogs) {
   console.log('-----onShow------')
-  if (!logs.initConfig.isTraceRoute) { return }
   // logs.currentPages = activityPage().route
   // this.currentsRoutes = [ ...routeList ]
   // if (this.timer) {

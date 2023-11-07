@@ -1,24 +1,24 @@
 import { onPageHide } from './onPage'
 import { requestHeartBeat, requestReportLog } from './report'
 import { CollectLogs } from './index'
+import { MpHook } from '@/types'
 import { activityPage, sleep } from '@/utils'
 import { isObject, isBoolean } from '@/utils/data-type'
 import { setUuid } from '@/utils/uuid'
 
-export function proxyComponentsTapEvents(logs: CollectLogs) {
+export function proxyComponentsEvents(config, logs: CollectLogs) {
+  const { isOnTapEvent, isOnPageLifecycle } = config
   const oldComponent = Component
   Component = function (componentOptions: any, ...arg: any[]) {
-    const methods = getMethods(componentOptions.methods)
-    if (methods) {
-      methods.forEach((methodName) => {
-        clickProxy(componentOptions.methods, methodName, logs)
-      })
-    }
+    // const methods = getMethods(componentOptions.methods)
+    // if (methods) {
+    //   methods.forEach((methodName) => {
+    //     clickProxy(componentOptions.methods, methodName, logs)
+    //   })
+    // }
 
-    const isNewLoad = true
-    let showTime: any
-    let hideTime: any
-    let previousPage = ''
+    console.log('----->', isOnTapEvent, isOnPageLifecycle)
+    proxyComponentsTapEvents(componentOptions, arg, logs)
 
     // const oldLoad = componentOptions.methods.onLoad
     // if (oldLoad) {
@@ -34,46 +34,58 @@ export function proxyComponentsTapEvents(logs: CollectLogs) {
     //     oldLoad.apply(this, arg)
     //   }
     // }
-
-    const oldShow = componentOptions.methods.onShow
-    if (oldShow) {
-      componentOptions.methods['onShow'] = async function () {
-        await sleep(300)
-        console.log('onShow====>', activityPage().route)
-        // logs.reportLog({
-        console.log('🚀 ~ file: lifecycle.ts:50 ~ previousPage:', previousPage)
-        await requestReportLog({
-          referer: previousPage,
-          id: setUuid(),
-          eventType: 'page_view'
-        }, logs)
-        previousPage = activityPage().route
-
-        oldShow.apply(this, arg)
-      }
-    }
-
-    const oldHide = componentOptions.methods.onHide
-    if (oldHide) {
-      componentOptions.methods['onHide'] = function () {
-        console.log('onHide====>', activityPage().route)
-        requestHeartBeat(logs)
-
-        oldHide.apply(this, arg)
-      }
-    }
-
-    const old = componentOptions.methods.onUnload
-    if (old) {
-      componentOptions.methods['onUnload'] = function () {
-        console.log('onUnload====>', activityPage().route)
-        requestHeartBeat(logs)
-
-        old.apply(this, arg)
-      }
-    }
+    proxyComponentsLifecycleEvents(componentOptions, arg, logs)
 
     return oldComponent(componentOptions)
+  }
+}
+
+function proxyComponentsTapEvents(componentOptions: any, arg: any, logs: CollectLogs) {
+  const methods = getMethods(componentOptions.methods)
+  if (methods) {
+    methods.forEach((methodName) => {
+      clickProxy(componentOptions.methods, methodName, logs)
+    })
+  }
+}
+
+function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: CollectLogs) {
+  let previousPage = ''
+
+  const oldShow = componentOptions.methods.onShow
+  if (oldShow) {
+    componentOptions.methods['onShow'] = async function () {
+      await sleep(300)
+      console.log('onShow====>', activityPage().route)
+      await requestReportLog({
+        referer: previousPage,
+        id: setUuid(),
+        eventType: 'page_view'
+      }, logs)
+      previousPage = activityPage().route
+
+      oldShow.apply(this, arg)
+    }
+  }
+
+  const oldHide = componentOptions.methods.onHide
+  if (oldHide) {
+    componentOptions.methods['onHide'] = function () {
+      console.log('onHide====>', activityPage().route)
+      requestHeartBeat(logs)
+
+      oldHide.apply(this, arg)
+    }
+  }
+
+  const old = componentOptions.methods.onUnload
+  if (old) {
+    componentOptions.methods['onUnload'] = function () {
+      console.log('onUnload====>', activityPage().route)
+      requestHeartBeat(logs)
+
+      old.apply(this, arg)
+    }
   }
 }
 
@@ -83,49 +95,11 @@ export function proxyPageEvents(logs: CollectLogs) {
     const methods = getMethods(pageOptions)
     if (methods) {
       methods.forEach((methodName) => {
-        if (['onShow', 'onHide'].includes(methodName)) {
-          methods[methodName] = function () {}
-        }
-        if (methodName === 'onShow') {
-          console.log('代理了-------onshow')
-          const oldOnShow = methods[methodName]
-          methods[methodName] = function () {
-            // onPageShow(logs, oldOnShow)
-          }
-        }
-        if (methodName === 'onHide') {
-          console.log('代理了-------onhide')
-          // let oldOnHide = methods[methodName]
-          onPageHide(logs, methods, methodName)
-          // methods[methodName] = function () {
-          //   onPageHide(logs, oldOnHide)
-          // }
-        }
-        // console.log('componentOptions.methods', componentOptions.methods, methodName)
         clickProxy(pageOptions, methodName, logs)
-        // const originMethod = componentOptions[methodName]
-        // // originMethod.apply(this, arguments)
-        // if (typeof originMethod !== "function") {
-        //   return true
-        // }
-
-        // (componentOptions.methods as any)[methodName] = function (options: any) {
-        //   return originMethod.call(this, options)
-        // }
       })
     }
-    // console.log('list', list)
-    // if (list) {
-    //   for (var i = 0, len = list.length; i < len; i++) {
-    //     console.log('proxy-page-event', pageOptions, list[i])
-    //     // clickProxy(pageOptions, list[i], logs)
-    //     onPageShow(logs)
-    //   }
-    // }
-    return oldPage(pageOptions)
-    // oldPage.apply(this, arguments)
+    oldPage.apply(this, arguments)
   }
-  // onPageHide(logs)
 }
 
 // 事件代理
@@ -182,10 +156,6 @@ export function clickProxy(options: any, method: any, logs: CollectLogs) {
       fn && fn.apply(this, arg)
     )
   }
-}
-
-interface MpHook {
-  [key: string]: boolean
 }
 
 // 获取component的方法

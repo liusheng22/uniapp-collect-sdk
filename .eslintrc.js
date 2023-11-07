@@ -14,6 +14,8 @@ module.exports = {
         allowDestructuring: true,
         allowedNames: ['self']
       }
-    ]
+    ],
+    // 允许使用 arguments
+    'prefer-rest-params': 0
   }
 }

@@ -34,15 +34,20 @@ export interface ResConfig {
   url: string
 }
 
+
+export interface MpHook {
+  [key: string]: boolean
+}
+
 export interface InitConfig {
   uniqueId?: string
   platform?: string
   customFields: any
   isShowLog?: boolean
-  isOnLifecycle?: boolean
+  isOnAppLifecycle?: boolean
+  isOnPageLifecycle?: boolean
   isOnCaptureScreen?: boolean
   isOnTapEvent?: boolean
-  isTraceRoute?: boolean
   isTraceNetwork?: boolean
   isTraceMemory?: boolean
 }

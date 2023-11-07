@@ -1,20 +1,29 @@
 import { CollectLogs } from './index'
 import { wxb } from '@/constants/index'
 import { activityPage, formatTime } from '@/utils/index'
+import { canIUse } from '@/utils/uni-api'
 
 export function onApp(logs: CollectLogs) {
-  wxb.onAppShow(() => {
-    onAppShowReport(logs)
-  })
-  wxb.onAppHide(() => {
-    onAppHideReport(logs)
-  })
-  wxb.onPageNotFound((errorInfo: any) => {
-    logs.reportLog({
-      errorType: 'notFount',
-      errorInfo
+  if (canIUse('onAppShow')) {
+    wxb.onAppShow(() => {
+      onAppShowReport(logs)
     })
-  })
+  }
+
+  if (canIUse('onAppHide')) {
+    wxb.onAppHide(() => {
+      onAppHideReport(logs)
+    })
+  }
+
+  if (canIUse('onPageNotFound')) {
+    wxb.onPageNotFound((errorInfo: any) => {
+      logs.reportLog({
+        errorType: 'notFount',
+        errorInfo
+      })
+    })
+  }
 }
 
 export function startInterval(logs: CollectLogs) {
