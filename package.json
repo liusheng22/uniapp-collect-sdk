@@ -13,6 +13,7 @@
     "build": "tsc && tsc-alias",
     "release": "tsc && npm publish",
     "eslint": "eslint . --fix --ext .ts",
+    "prepare": "husky install",
     "vue2-wx": "cd examples/uniapp-vue2 && npm run dev:mp-weixin",
     "vue2-tt": "cd examples/uniapp-vue2 && npm run dev:mp-toutiao"
   },
@@ -21,10 +22,22 @@
     "concurrently": "^8.2.2",
     "eslint": "^8.26.0",
     "eslint-config-wxb-typescript": "^0.0.18",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.8",
     "tslint-config-prettier": "^1.18.0",
     "ttypescript": "^1.5.15",
     "typescript": "^3.9.10"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --ext .ts"
+    ]
   }
 }
