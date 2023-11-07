@@ -1,7 +1,3 @@
-<template>
-  <test-component />
-</template>
-
 <script>
 	export default {
 		onLaunch: function() {

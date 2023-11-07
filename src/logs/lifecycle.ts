@@ -10,31 +10,10 @@ export function proxyComponentsEvents(config, logs: CollectLogs) {
   const { isOnTapEvent, isOnPageLifecycle } = config
   const oldComponent = Component
   Component = function (componentOptions: any, ...arg: any[]) {
-    // const methods = getMethods(componentOptions.methods)
-    // if (methods) {
-    //   methods.forEach((methodName) => {
-    //     clickProxy(componentOptions.methods, methodName, logs)
-    //   })
-    // }
 
-    console.log('----->', isOnTapEvent, isOnPageLifecycle)
-    proxyComponentsTapEvents(componentOptions, arg, logs)
+    isOnTapEvent && proxyComponentsTapEvents(componentOptions, arg, logs)
 
-    // const oldLoad = componentOptions.methods.onLoad
-    // if (oldLoad) {
-    //   componentOptions.methods['onLoad'] = function (args: any) {
-    //     console.log('onLoad====>', activityPage().route, args)
-    //     // logs.reportLog({
-    //     //   id: getUuid(),
-    //     //   eventType: 'page_view',
-    //     //   errorInfo: activityPage().route,
-    //     //   loadOptions: activityPage().options
-    //     // })
-    //     // isNewLoad = false
-    //     oldLoad.apply(this, arg)
-    //   }
-    // }
-    proxyComponentsLifecycleEvents(componentOptions, arg, logs)
+    isOnPageLifecycle && proxyComponentsLifecycleEvents(componentOptions, arg, logs)
 
     return oldComponent(componentOptions)
   }
@@ -51,6 +30,21 @@ function proxyComponentsTapEvents(componentOptions: any, arg: any, logs: Collect
 
 function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: CollectLogs) {
   let previousPage = ''
+
+  // const oldLoad = componentOptions.methods.onLoad
+  // if (oldLoad) {
+  //   componentOptions.methods['onLoad'] = function (args: any) {
+  //     console.log('onLoad====>', activityPage().route, args)
+  //     // logs.reportLog({
+  //     //   id: getUuid(),
+  //     //   eventType: 'page_view',
+  //     //   errorInfo: activityPage().route,
+  //     //   loadOptions: activityPage().options
+  //     // })
+  //     // isNewLoad = false
+  //     oldLoad.apply(this, arg)
+  //   }
+  // }
 
   const oldShow = componentOptions.methods.onShow
   if (oldShow) {
