@@ -16,6 +16,10 @@
     <custom-button @tap="customClick">自定义点击</custom-button>
     <h1>{{ num }}</h1>
 
+    <img data-logs="猫-img" :src="img" mode="widthFix" @tap.stop />
+
+    <image data-logs="猫-image" :src="img" mode="widthFix" @tap.prevent />
+
     <!-- <test-component /> -->
   </div>
 </template>
@@ -32,7 +36,8 @@ export default {
   // 数据状态
   data() {
     return {
-      num: 1
+      num: 1,
+      img: 'https://img.yzcdn.cn/vant/cat.jpeg',
     }
   },
   // onLoad(options) {
@@ -61,6 +66,7 @@ export default {
       // console.log('noop')
     },
     testClick() {
+      this.num++
       console.log('testClick')
       // this.$collectLogs.reportLog({
       //   eventType: 'test-click'
@@ -68,9 +74,9 @@ export default {
     },
     customClick() {
       this.num++
-      collectLogs.reportLog({
-        eventType: 'custom-click'
-      })
+      // collectLogs.reportLog({
+      //   eventType: 'custom-click'
+      // })
       // this.$collectLogs.reportLog({
       //   eventType: 'custom-click'
       // })
