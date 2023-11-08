@@ -12,10 +12,12 @@ module.exports = {
       'error',
       {
         allowDestructuring: true,
-        allowedNames: ['self']
+        allowedNames: ['self', 'that']
       }
     ],
     // 允许使用 arguments
-    'prefer-rest-params': 0
+    'prefer-rest-params': 0,
+    // 允许使用 ts-ignore
+    '@typescript-eslint/ban-ts-comment': 0
   }
 }

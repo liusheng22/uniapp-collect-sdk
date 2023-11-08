@@ -25,6 +25,12 @@
       "style": {
         "navigationBarTitleText": "c页面"
       }
+    },
+    {
+      "path": "pages/test/a-nvue",
+      "style": {
+        "navigationBarTitleText": "a-nvue页面"
+      }
     }
   ],
   "globalStyle": {

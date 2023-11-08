@@ -42,6 +42,76 @@ export function sleep(time = 1500): Promise<void> {
   return new Promise<void>((resolve) => setTimeout(resolve, time))
 }
 
+/**
+ * 防抖
+ * @param {*} func
+ * @param {*} wait
+ * @param {*} immediate 是否立即执行
+ * @returns function
+ */
+export function debounce(func: any, wait: number, immediate: boolean) {
+  let timeout, result
+
+  return function () {
+    const self = this
+    const args = arguments
+
+    if (timeout) { clearTimeout(timeout) }
+    if (immediate) {
+      const callNow = !timeout
+      timeout = setTimeout(function () {
+        timeout = null
+      }, wait)
+      if (callNow) { result = func.apply(self, args) }
+    } else {
+      timeout = setTimeout(function () {
+        func.apply(self, args)
+      }, wait)
+    }
+    return result
+  }
+}
+
+/**
+ * 节流
+ * @param {*} func
+ * @param {*} wait
+ * @param {*} options  leading：false 表示禁用第一次执行 trailing: false 表示禁用停止触发的回调   leading：false 和 trailing: false 不能同时设置
+ * @returns function
+ */
+export function throttle(func: any, wait: any, options: any) {
+  let timeout, self, args
+  let previous = 0
+  if (!options) { options = {} }
+
+  const later = function () {
+    previous = options.leading === false ? 0 : new Date().getTime()
+    timeout = null
+    func.apply(self, args)
+    if (!timeout) { self = args = null }
+  }
+
+  const throttled = function () {
+    const now = new Date().getTime()
+    if (!previous && options.leading === false) { previous = now }
+    const remaining = wait - (now - previous)
+    self = this
+    args = arguments
+    if (remaining <= 0 || remaining > wait) {
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+      previous = now
+      func.apply(self, args)
+      if (!timeout) { self = args = null }
+    } else if (!timeout && options.trailing !== false) {
+      timeout = setTimeout(later, remaining)
+    }
+  }
+  return throttled
+}
+
 // 遍历找出 pages 的对象
 export const getPageInfo = (pages: any, pagePath: string) => {
   // const page = pages[pagePath]
@@ -54,8 +124,9 @@ export const getPageInfo = (pages: any, pagePath: string) => {
 export const getAppCurrPageView = () => {
   let titleNView = { titleText: '' }
   // #ifdef APP-PLUS
-  const pages = getCurrentPages()
+  const pages = getCurrentPages() || []
   const page = pages[pages.length - 1]
+  if (!page) { return titleNView }
   const webView = page.$getAppWebview()
   titleNView = webView.getStyle().titleNView
   // #endif

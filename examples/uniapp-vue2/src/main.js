@@ -17,7 +17,7 @@ Vue.component('test-component', testComponent)
 // const collectLogs = new CollectLogs(Vue)
 Vue.prototype.$collectLogs = collectLogs
 collectLogs.init({
-  platform: 'test-platform',
+  sourcePlatform: 'test-platform',
   uniqueId: 'test123',
   isShowLog: false,
   isOnAppLifecycle: true,
@@ -27,11 +27,6 @@ collectLogs.init({
   isOnTapEvent: true,
   isOnCaptureScreen: true
 })
-
-// 读取pages.json页面
-// // eslint-disable-next-line import/order, no-useless-escape
-// import pages from 'uni-pages?{\"type\":\"style\"}'
-// console.log('🚀 ~ file: main.js:25 ~ pages:', pages)
 
 const app = new Vue({
   ...App

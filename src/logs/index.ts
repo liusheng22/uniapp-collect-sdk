@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line no-useless-escape
 import uniPages from 'uni-pages?{\"type\":\"style\"}'
@@ -11,10 +10,12 @@ import {
 import { proxyComponentsEvents } from './lifecycle'
 import { onApp } from './onApp'
 import { onError } from './onError'
+import { proxyRequest } from './proxyRequest'
 import { requestReportLog } from './report'
 import { ReportOpts, InitConfig, Success, ResConfig } from '../types'
-import { wxb } from '@/constants'
+import { customFieldsStorageKey, wxb } from '@/constants'
 import { consoleLog } from '@/utils/console-log'
+import { isNull, isObject, isUndefined } from '@/utils/data-type'
 import { validateParams } from '@/utils/validate'
 
 export class CollectLogs {
@@ -27,22 +28,11 @@ export class CollectLogs {
   public Vue: any
 
   constructor(Vue: any) {
-    Vue.mixin({
-      onShow() {
-        console.log('自己创建的mixin onShow')
-      },
-      onHide() {
-        console.log('自己创建的mixin onHide')
-      },
-      onUnload() {
-        console.log('自己创建的mixin onUnload')
-      }
-    })
-
     this.request = wxb.request
     this.logList = []
     this.pages = {}
     this.systemInfo = wxb.getSystemInfoSync()
+    this.Vue = Vue
     this.initConfig = {
       customFields: {}
     }
@@ -87,6 +77,7 @@ export class CollectLogs {
       isTraceMemory
     }
 
+    // proxyRequest(this)
     // console.log输出
     consoleLog(this)
     // 点击事件/路由事件
@@ -130,13 +121,36 @@ export class CollectLogs {
     })
   }
 
+  public async updateCustomFields(customFields: object) {
+    if (!customFields) {
+      if (isUndefined(customFields)) {
+        wxb.removeStorageSync(customFieldsStorageKey)
+        return
+      }
+      if (isNull(customFields)) {
+        wxb.removeStorageSync(customFieldsStorageKey)
+        return
+      }
+      return Promise.reject('缺少参数，如需清空自定义字段，请不传参数')
+    }
+
+    if (!isObject(customFields)) { return Promise.reject('传入参数必须是一个对象') }
+
+    const fieldsData = wxb.getStorageSync(customFieldsStorageKey)
+    const currentFields = isObject(fieldsData) ? fieldsData : {}
+
+    const newFields = {
+      ...currentFields,
+      ...customFields
+    }
+
+    wxb.setStorageSync(customFieldsStorageKey, newFields)
+  }
+
   public successResponse(success: Success, config: ResConfig) {
     console.log('config =>', config)
-    // let { url } = config
-    // if (~url.indexOf('error-collect')) return // 避免循环上报
     const { statusCode, reqQuery, data: resData } = success
     if (statusCode !== 200) {
-      console.log('resData =>', resData)
       this.reportLog({
         errorInfo: resData,
         apiQuery: reqQuery

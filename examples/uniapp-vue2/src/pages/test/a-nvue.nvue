@@ -1,13 +1,9 @@
 <template>
   <div>
-    <div class="center">a page</div>
+    <div class="center">a nvue page</div>
     <button @tap="link('/pages/test/b')">to b page</button>
     <view class="button-default" @tap="link('/pages/test/c')">to c page</view>
-    <button @tap="link('/pages/test/a-nvue')">to nvue a page</button>
 
-    <!-- <button  data-logs="errorInfo" data-type="errorType" @tap="noop" style="margin:30rpx 0;">点击测试</button>
-    <div data-logs="errorInfo" data-type="errorType" @tap="noop" style="margin:30rpx 0;">点击测试</div>
-    <div class="test" @tap="noop" style="margin:30rpx 0;">点击测试</div> -->
     <div @tap="customClick" data-logs="dev自动采集点击" style="margin:30rpx 0;">自定义点击测试</div>
 
     <button data-logs="test-123" @tap="testClick">测试按钮</button>
@@ -44,9 +40,27 @@ export default {
   // onLoad(options) {
   //   // console.log('aaaa', this.appid)
   // },
-  // onShow() {
-  //   console.log('页面的 show')
-  // },
+  onShow() {
+    uni.setStorageSync('test_obj', {
+      a: 1,
+      b: 2,
+    })
+    uni.setStorageSync('test_arr', [{
+      a: 1,
+      b: 2,
+      c: () => {
+        console.log('c', this.a)
+      }
+    }])
+    const func = () => {
+      console.log('func')
+    }
+    uni.setStorageSync('test_func', func)
+
+    console.log('test_obj', uni.getStorageSync('test_obj'))
+    console.log('test_arr', uni.getStorageSync('test_arr'))
+    console.log('test_func', uni.getStorageSync('test_func'))
+  },
   // onHide() {
   //   console.log('页面的 hide')
   // },
@@ -72,11 +86,6 @@ export default {
       // this.$collectLogs.reportLog({
       //   eventType: 'test-click'
       // })
-
-      collectLogs.updateCustomFields({
-        a: 1,
-        b: 2,
-      })
     },
     customClick() {
       this.num++

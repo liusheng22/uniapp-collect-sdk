@@ -1,22 +1,80 @@
-import { onPageHide } from './onPage'
 import { requestHeartBeat, requestReportLog } from './report'
 import { CollectLogs } from './index'
 import { MpHook } from '@/types'
-import { activityPage, sleep } from '@/utils'
+import { activityPage, debounce, sleep } from '@/utils'
 import { isObject, isBoolean } from '@/utils/data-type'
-import { setUuid } from '@/utils/uuid'
 
-export function proxyComponentsEvents(config, logs: CollectLogs) {
+export function proxyComponentsEvents(config: any, logs: CollectLogs) {
   const { isOnTapEvent, isOnPageLifecycle } = config
+  createVueLifecycle(isOnPageLifecycle, logs)
   const oldComponent = Component
   Component = function (componentOptions: any, ...arg: any[]) {
-
     isOnTapEvent && proxyComponentsTapEvents(componentOptions, arg, logs)
 
     isOnPageLifecycle && proxyComponentsLifecycleEvents(componentOptions, arg, logs)
 
     return oldComponent(componentOptions)
   }
+}
+
+function createVueLifecycle(isOnPageLifecycle: boolean, logs: CollectLogs) {
+  previousPage = activityPage().route
+  logs.Vue.mixin({
+    data() {
+      return {
+      }
+    },
+    /**
+     * 生命周期函数--监听页面显示
+     * - app-plus平台: options为onAppShow事件的参数，但是APP没有onAppShow事件
+     * - app-plus平台：onAppShow事件由onShow事件代替了，例:APP启动时onShow会触发2次
+     * - 所以通过判断options的值是否为undefined，来确定是否为onAppShow事件
+     */
+    onShow(options: any) {
+      // #ifdef APP-PLUS
+      if (!isOnPageLifecycle) { return }
+      if (options) { return }
+      console.log('自己创建的mixin onShow')
+      requestReportLog({
+        referer: previousPage,
+        eventType: 'page_view'
+      }, logs)
+      // #endif
+
+    },
+    // onShow: debounce(async function (e) {
+    //   await sleep(100)
+    //   if (!isOnPageLifecycle) { return }
+    //   console.log('自己创建的mixin onShow')
+    //   requestReportLog({
+    //     referer: previousPage,
+    //     eventType: 'page_view'
+    //   }, logs)
+    // }, 300, true),
+    /**
+     * 生命周期函数--监听页面隐藏
+     * - app-plus平台：onAppHide事件由onHide事件代替了，例:APP隐藏时onHide会触发2次
+     * - 所以通过防抖函数来过滤掉onHide事件的一次触发
+     */
+    onHide: debounce(async function () {
+      // #ifdef APP-PLUS
+      if (!isOnPageLifecycle) { return }
+      console.log('自己创建的mixin onHide')
+      previousPage = activityPage().route
+      requestHeartBeat(logs)
+      // #endif
+
+    }, 300, true),
+    onUnload() {
+      // #ifdef APP-PLUS
+      if (!isOnPageLifecycle) { return }
+      console.log('自己创建的mixin onUnload')
+      previousPage = activityPage().route
+      requestHeartBeat(logs)
+      // #endif
+
+    }
+  })
 }
 
 function proxyComponentsTapEvents(componentOptions: any, arg: any, logs: CollectLogs) {
@@ -28,9 +86,8 @@ function proxyComponentsTapEvents(componentOptions: any, arg: any, logs: Collect
   }
 }
 
+let previousPage = ''
 function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: CollectLogs) {
-  let previousPage = ''
-
   // const oldLoad = componentOptions.methods.onLoad
   // if (oldLoad) {
   //   componentOptions.methods['onLoad'] = function (args: any) {
@@ -49,14 +106,14 @@ function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: C
   const oldShow = componentOptions.methods.onShow
   if (oldShow) {
     componentOptions.methods['onShow'] = async function () {
-      await sleep(300)
+      // await sleep(300)
       console.log('onShow====>', activityPage().route)
       await requestReportLog({
         referer: previousPage,
-        id: setUuid(),
+        // id: setUuid(),
         eventType: 'page_view'
       }, logs)
-      previousPage = activityPage().route
+      // previousPage = activityPage().route
 
       oldShow.apply(this, arg)
     }
@@ -66,19 +123,21 @@ function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: C
   if (oldHide) {
     componentOptions.methods['onHide'] = function () {
       console.log('onHide====>', activityPage().route)
+      previousPage = activityPage().route
       requestHeartBeat(logs)
 
       oldHide.apply(this, arg)
     }
   }
 
-  const old = componentOptions.methods.onUnload
-  if (old) {
+  const oldUnload = componentOptions.methods.onUnload
+  if (oldUnload) {
     componentOptions.methods['onUnload'] = function () {
       console.log('onUnload====>', activityPage().route)
+      previousPage = activityPage().route
       requestHeartBeat(logs)
 
-      old.apply(this, arg)
+      oldUnload.apply(this, arg)
     }
   }
 }
@@ -136,7 +195,7 @@ export function clickProxy(options: any, method: any, logs: CollectLogs) {
       }
     }
     const { tapType, tapText } = tapsInfo
-    console.log(tapsInfo)
+    // console.log(tapsInfo)
 
     return (
       eventType

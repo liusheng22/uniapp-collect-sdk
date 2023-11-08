@@ -35,7 +35,15 @@ export default {
     clickHandler(e) {
       const { target, touches, pageX, pageY } = e
       const tapsInfo = {}
-      const { dataset } = target
+      var dataset = {}
+
+      if (['IMG'].includes(target.tagName)) {
+        var { dataset } = target.parentElement
+      } else {
+        var { dataset } = target
+      }
+
+
       const { logs, type } = dataset
       tapsInfo.tapType = isBoolean(type) ? '' : type
       tapsInfo.tapText = isBoolean(logs) ? '' : logs
