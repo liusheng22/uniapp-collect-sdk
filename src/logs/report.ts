@@ -1,6 +1,6 @@
 import { ReportOpts } from '../types'
 import { CollectLogs } from '.'
-import { wxb } from '@/constants'
+import { customFieldsStorageKey, wxb } from '@/constants'
 import { apiUrls } from '@/constants/api'
 import { activityPage, getAppCurrPageView, getPageInfo } from '@/utils'
 import { log } from '@/utils/console-log'
@@ -19,6 +19,8 @@ export async function requestReportLog(
   opts: ReportOpts,
   logs: CollectLogs
 ): Promise<any> {
+  console.log('--- opts', opts)
+  console.log('--- logs', logs)
   const {
     // id = '',
     eventType,
@@ -61,8 +63,7 @@ export async function requestReportLog(
   const pageQuery = JSON.stringify(query)
 
   if (!eventType) {
-    // return Promise.resolve({})
-    return Promise.reject(new Error('缺少必要参数「eventType」'))
+    return Promise.resolve({})
   }
 
   const { windowHeight, windowWidth } = logs.systemInfo
@@ -87,6 +88,9 @@ export async function requestReportLog(
   const { navigationBarTitleText } = getPageInfo(logs.pages, pagePath)
   const { titleText } = getAppCurrPageView()
 
+  // 获取用户后续补充的自定义字段
+  const fieldsData = wxb.getStorageSync(customFieldsStorageKey)
+  const supplementFields = isObject(fieldsData) ? fieldsData : {}
   const properties = {
     project_account: '',
     group_account: '',
@@ -96,7 +100,8 @@ export async function requestReportLog(
     referer,
     avail_width: windowWidth,
     avail_height: windowHeight,
-    ...extendFields
+    ...extendFields,
+    ...supplementFields
   }
   // 设备信息
   const deviceInfo = {

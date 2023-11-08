@@ -1,7 +1,6 @@
 // @ts-ignore
 // eslint-disable-next-line no-useless-escape
 import uniPages from 'uni-pages?{\"type\":\"style\"}'
-console.log('🚀 ~ file: index.ts:4 ~ uniPages:', uniPages)
 import {
   onUserCaptureScreen,
   onMemory,
@@ -14,8 +13,9 @@ import { onError } from './onError'
 import { proxyRequest } from './proxyRequest'
 import { requestReportLog } from './report'
 import { ReportOpts, InitConfig, Success, ResConfig } from '../types'
-import { wxb } from '@/constants'
+import { customFieldsStorageKey, wxb } from '@/constants'
 import { consoleLog } from '@/utils/console-log'
+import { isNull, isObject, isUndefined } from '@/utils/data-type'
 import { validateParams } from '@/utils/validate'
 
 export class CollectLogs {
@@ -119,6 +119,32 @@ export class CollectLogs {
           reject(err)
         })
     })
+  }
+
+  public async updateCustomFields(customFields: object) {
+    if (!customFields) {
+      if (isUndefined(customFields)) {
+        wxb.removeStorageSync(customFieldsStorageKey)
+        return
+      }
+      if (isNull(customFields)) {
+        wxb.removeStorageSync(customFieldsStorageKey)
+        return
+      }
+      return Promise.reject('缺少参数，如需清空自定义字段，请不传参数')
+    }
+
+    if (!isObject(customFields)) { return Promise.reject('传入参数必须是一个对象') }
+
+    const fieldsData = wxb.getStorageSync(customFieldsStorageKey)
+    const currentFields = isObject(fieldsData) ? fieldsData : {}
+
+    const newFields = {
+      ...currentFields,
+      ...customFields
+    }
+
+    wxb.setStorageSync(customFieldsStorageKey, newFields)
   }
 
   public successResponse(success: Success, config: ResConfig) {

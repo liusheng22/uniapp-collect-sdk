@@ -1,17 +1,25 @@
 const isObject = (obj: any) => {
-  return Object.prototype.toString.call(obj) === '[object Object]'
+  return type(obj) === 'object'
 }
 
 const isArray = (arr: any) => {
-  return Object.prototype.toString.call(arr) === '[object Array]'
+  return type(arr) === 'array'
 }
 
 const isFunction = (fn: any) => {
-  return Object.prototype.toString.call(fn) === '[object Function]'
+  return type(fn) === 'function'
 }
 
 const isBoolean = (bool: any) => {
-  return Object.prototype.toString.call(bool) === '[object Boolean]'
+  return type(bool) === 'boolean'
+}
+
+const isNull = (nullObj: any) => {
+  return type(nullObj) === 'null'
+}
+
+const isUndefined = (undefinedObj: any) => {
+  return type(undefinedObj) === 'undefined'
 }
 
 /**
@@ -39,5 +47,7 @@ export {
   isArray,
   isFunction,
   isBoolean,
+  isNull,
+  isUndefined,
   type
 }
