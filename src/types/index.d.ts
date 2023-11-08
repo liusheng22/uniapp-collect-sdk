@@ -14,7 +14,7 @@ export interface ReportOpts {
   // eventType: string
   eventType?: string
   loadOptions?: any
-  id?: string,
+  // id?: string,
   referer?: string
   loadOptions?: any
   extendFields?: any
@@ -23,8 +23,6 @@ export interface ReportOpts {
   errorInfo?: any
   params?: any
   requestId?: string
-  userId?: string
-  reportPlatform?: string
   apiQuery?: string
   isClearLog?: boolean
 }
@@ -41,7 +39,7 @@ export interface MpHook {
 
 export interface InitConfig {
   uniqueId?: string
-  platform?: string
+  sourcePlatform?: string
   customFields: any
   isShowLog?: boolean
   isOnAppLifecycle?: boolean
