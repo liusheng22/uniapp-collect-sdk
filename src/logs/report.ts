@@ -1,6 +1,6 @@
 import { ReportOpts } from '../types'
 import { CollectLogs } from '.'
-import { customFieldsStorageKey, wxb } from '@/constants'
+import { wxb } from '@/constants'
 import { apiUrls } from '@/constants/api'
 import { activityPage, getAppCurrPageView, getPageInfo } from '@/utils'
 import { log, err } from '@/utils/console-log'
@@ -90,8 +90,8 @@ export async function requestReportLog(
   const { titleText } = getAppCurrPageView()
 
   // 获取用户后续补充的自定义字段
-  const fieldsData = wxb.getStorageSync(customFieldsStorageKey)
-  const supplementFields = isObject(fieldsData) ? fieldsData : {}
+  const fieldData = logs.supplementFields
+  const supplementFields = isObject(fieldData) ? fieldData : {}
   const properties = {
     project_account: '',
     group_account: '',

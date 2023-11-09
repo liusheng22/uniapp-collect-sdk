@@ -1,4 +1,4 @@
-// import { CollectLogs } from 'uni-collect-ts'
+// import { CollectLogs } from 'wxb-uniapp-collect-sdk'
 import Vue from 'vue'
 import App from './App'
 // import customButton from './pages/components/custom-button.vue'

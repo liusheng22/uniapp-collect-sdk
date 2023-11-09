@@ -13,6 +13,7 @@ import { onError } from './onError'
 import { requestReportLog } from './report'
 import { ReportOpts, InitConfig, Success, ResConfig } from '../types'
 import { customFieldsStorageKey, wxb, defaultConfig } from '@/constants'
+import { deepClone } from '@/utils/clone'
 import { log } from '@/utils/console-log'
 import { isNull, isObject, isUndefined } from '@/utils/data-type'
 import { validateParams } from '@/utils/validate'
@@ -25,6 +26,7 @@ export class CollectLogs {
   public logList: Array<ReportOpts>
   public systemInfo: any
   public initConfig: InitConfig
+  public supplementFields: any
   public vueApp: any
   public Vue: any
 
@@ -41,6 +43,10 @@ export class CollectLogs {
     this.systemInfo = wxb.getSystemInfoSync()
     this.Vue = Vue
     this.initConfig = defaultConfig
+    this.supplementFields = {}
+
+    // 监听component的methods
+    // proxyComponentsTapEvents(this)
   }
 
   public init(config: InitConfig) {
@@ -58,7 +64,7 @@ export class CollectLogs {
       return Promise.reject(msg)
     }
     const { isOnTapEvent, isOnPageLifecycle, isOnCaptureScreen, isTraceMemory, isOnAppLifecycle, isTraceNetwork } = this.initConfig
-   
+
     // 点击事件/路由事件
     proxyComponentsEvents({
       isOnTapEvent,
@@ -110,14 +116,21 @@ export class CollectLogs {
     })
   }
 
-  public async updateCustomFields(customFields: object) {
+  /**
+   * 更新自定义字段
+   * @param customFields 自定义字段
+   * @returns {Promise<any>} 更新结果
+   */
+  public async updateCustomFields(customFields: object): Promise<any> {
     if (!customFields) {
       if (isUndefined(customFields)) {
         wxb.removeStorageSync(customFieldsStorageKey)
+        this.supplementFields = {}
         return
       }
       if (isNull(customFields)) {
         wxb.removeStorageSync(customFieldsStorageKey)
+        this.supplementFields = {}
         return
       }
       return Promise.reject('缺少参数，如需清空自定义字段，请不传参数')
@@ -125,15 +138,17 @@ export class CollectLogs {
 
     if (!isObject(customFields)) { return Promise.reject('传入参数必须是一个对象') }
 
-    const fieldsData = wxb.getStorageSync(customFieldsStorageKey)
+    const fieldsData = deepClone(this.supplementFields)
     const currentFields = isObject(fieldsData) ? fieldsData : {}
-
     const newFields = {
       ...currentFields,
       ...customFields
     }
 
     wxb.setStorageSync(customFieldsStorageKey, newFields)
+    this.supplementFields = newFields
+
+    return newFields
   }
 
   public successResponse(success: Success, config: ResConfig) {

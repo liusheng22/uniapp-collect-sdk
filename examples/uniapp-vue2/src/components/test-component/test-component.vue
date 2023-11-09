@@ -35,18 +35,24 @@ export default {
     clickHandler(e) {
       const { target, touches, pageX, pageY } = e
       const tapsInfo = {}
+      let elInnerText = ''
       var dataset = {}
 
-      if (['IMG'].includes(target.tagName)) {
+      const { tagName } = target
+      if (['UNI-BUTTON', 'UNI-NAVIGATOR', 'BUTTON', 'A'].includes(tagName)) {
+        elInnerText = this.getElInnerText(target)
+      }
+
+      if (['IMG'].includes(tagName)) {
         var { dataset } = target.parentElement
       } else {
         var { dataset } = target
       }
 
-
       const { logs, type } = dataset
       tapsInfo.tapType = isBoolean(type) ? '' : type
       tapsInfo.tapText = isBoolean(logs) ? '' : logs
+      tapsInfo.tapText = tapsInfo.tapText || elInnerText
       // console.log('logs, type ->', logs, type)
 
       tapsInfo.tapText && this.$ownerInstance.callMethod('reportClick', {
@@ -57,7 +63,10 @@ export default {
           ordinate: pageY,
         }
       })
-    }
+    },
+    getElInnerText(el) {
+      return el.innerText || el.textContent || el.nodeValue || el.value || ''
+    },
   }
 }
 </script>
