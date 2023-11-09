@@ -1,3 +1,7 @@
+import { err } from './console-log'
+import { isArray, isFunction, isObject } from './data-type'
+import { validateKeywords } from './validate'
+import { wxb } from '@/constants'
 import { PageOpts } from '@/types'
 
 /**
@@ -131,4 +135,27 @@ export const getAppCurrPageView = () => {
   titleNView = webView.getStyle().titleNView
   // #endif
   return titleNView || { titleText: '' }
+}
+
+export const getCustomFields = (customFields: any) => {
+  let extendFields = {}
+  Object.keys(customFields).forEach((key) => {
+    const itemObj = customFields[key]
+    if (itemObj['value'] && !isFunction(itemObj['value']) && !isArray(itemObj['value'])) {
+      extendFields[key] = itemObj['value']
+      return
+    }
+    const getKey = itemObj['key']
+    if (!getKey ) { return }
+
+    const getStoreValue = wxb.getStorageSync(getKey)
+    if (isFunction(getStoreValue) && isArray(getStoreValue)) { return }
+    if (isObject(getStoreValue)) {
+      extendFields = { ...extendFields, ...getStoreValue }
+      return
+    }
+    extendFields[key] = getStoreValue
+  })
+  return extendFields
+
 }

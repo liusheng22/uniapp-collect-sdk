@@ -1,4 +1,4 @@
-import { isObject, isString } from './data-type'
+import { isArray, isObject, isString } from './data-type'
 import { InitConfig } from '../types'
 /**
 * @description 验证参数
@@ -42,7 +42,7 @@ export const validateParams = (props: InitConfig): [boolean, string] => {
  * @param props
  * @returns boolean
  */
-const validateKeyword = (props: object): [boolean, string] => {
+export const validateKeyword = (props: object): [boolean, string] => {
   const unvalidate = []
 
   if (isObject(props)) {
@@ -56,4 +56,25 @@ const validateKeyword = (props: object): [boolean, string] => {
     }
     return [true, '']
   }
+}
+
+export const validateKeywords = (props: object, keywords: Array<string>): [boolean, string] => {
+  if (!props && isObject(props)) {
+    return [false, '第一个参数应该是一个对象']
+  }
+  if (!keywords && isArray(keywords)) {
+    return [false, '第二个参数应该是一个数组']
+  }
+  const unvalidate = []
+  const propsKeys = Object.keys(props)
+  
+  keywords.map(item => {
+    if (!propsKeys.includes(item)) {
+      unvalidate.push(item)
+    }
+  })
+  if (unvalidate.length) {
+    return [false, `缺少必要参数${unvalidate.join()}`]
+  }
+  return [true, '']
 }

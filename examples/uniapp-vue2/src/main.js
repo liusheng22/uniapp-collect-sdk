@@ -22,6 +22,29 @@ collectLogs.init({
   project: 'product_basic',
   serverUrl: 'https://secretdata.test.wangxiaobao.com',
 
+  customFields: {
+    role: {
+      value: 'role1111',
+      key: 'role'
+    },
+    a: {
+      value: '',
+      key: 'a'
+    },
+    b: {
+      value: '',
+      key: 'b'
+    },
+    c: {
+      value: '',
+      key: 'b333'
+    },
+    d: {
+      value: '',
+      key222: 'wrw'
+    }
+  },
+
   isShowLog: false,
   isOnAppLifecycle: true,
   isOnPageLifecycle: true,

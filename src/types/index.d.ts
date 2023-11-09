@@ -11,6 +11,10 @@ export interface Fail {
 }
 
 export interface ReportOpts {
+  project?: string
+  eventType?: string
+  libMethod?: string
+
   // eventType: string
   eventType?: string
   loadOptions?: any
@@ -36,6 +40,7 @@ export interface ResConfig {
 export interface MpHook {
   [key: string]: boolean
 }
+
 
 export interface InitConfig {
   uniqueId: string

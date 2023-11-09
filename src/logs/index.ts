@@ -94,7 +94,7 @@ export class CollectLogs {
   // 自定义上报方法
   public async customReport(opts: { project: string, eventType: string }, properties: unknown ) {
     return new Promise((resolve, reject) => {
-      requestReportLog(opts, this, { ...opts, lib: { lib_method: 'CODE' }, properties } )
+      requestReportLog({ ...opts, libMethod: 'CODE', extendFields: properties }, this )
         .then((data: any) => {
           resolve(data)
         })

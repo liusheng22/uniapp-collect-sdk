@@ -3,6 +3,7 @@ import { CollectLogs } from '.'
 import { wxb } from '@/constants'
 import { apiUrls } from '@/constants/api'
 import { activityPage, getAppCurrPageView, getPageInfo } from '@/utils'
+import { getCustomFields } from '@/utils'
 import { log, err } from '@/utils/console-log'
 import { isObject } from '@/utils/data-type'
 import { formatLibType } from '@/utils/params'
@@ -19,12 +20,9 @@ import { validateParams } from '@/utils/validate'
 export async function requestReportLog(
   opts: ReportOpts,
   logs: CollectLogs,
-  customReportOpts?: any
 ): Promise<any> {
-  const { referer, extendFields = {} } = opts
-  let { requestId = '', eventType = '' } = opts
-  const { project: customProject = '', eventType: customEventType = '', lib: customLib = {}, properties: customProperties = {} } = customReportOpts || {}
-  eventType = customEventType || eventType
+  const { referer, eventType = '', libMethod = '', project: optProject } = opts
+  let { requestId = '', extendFields = {} } = opts
 
   // 校验字段
   const [validate, error] = validateParams(logs.initConfig)
@@ -33,7 +31,7 @@ export async function requestReportLog(
     err(msg)
     return Promise.reject(msg)
   }
-  if (!isObject(extendFields)) {
+  if (extendFields && !isObject(extendFields)) {
     const msg = '埋点error:「extendFields」必须是一个对象'
     err(msg)
     return Promise.reject(msg)
@@ -44,8 +42,16 @@ export async function requestReportLog(
     return Promise.reject(msg)
   }
 
+  const { uniqueId, sourcePlatform, serverUrl, project, customFields = { } } = logs.initConfig
+
+  if (customFields && !isObject(customFields)) {
+    const msg = '埋点error:「customFields」必须是一个对象'
+    err(msg)
+    return Promise.reject(msg)
+  }
+  extendFields = getCustomFields(customFields)
+
   const { networkType } = await wxb.getNetworkType()
-  const { uniqueId, sourcePlatform, serverUrl, project } = logs.initConfig
   requestId = `${Date.now()}_${uniqueId}`
 
   const {
@@ -76,15 +82,14 @@ export async function requestReportLog(
     request_id: requestId,
     distinct_id: uniqueId,
     event: eventType,
-    project: customProject || project,
+    project: optProject || project,
     type: 'track'
   }
   const lib = {
     lib: libType,
     lib_detail: '',
-    lib_method: 'AUTO',
-    lib_version: 'v2.0.7',
-    ...customLib
+    lib_method: libMethod || 'AUTO',
+    lib_version: 'v2.0.7'
   }
   const { navigationBarTitleText } = getPageInfo(logs.pages, pagePath)
   const { titleText } = getAppCurrPageView()
@@ -102,8 +107,7 @@ export async function requestReportLog(
     avail_width: windowWidth,
     avail_height: windowHeight,
     ...extendFields,
-    ...supplementFields,
-    ...customProperties
+    ...supplementFields
   }
   // 设备信息
   const deviceInfo = {
