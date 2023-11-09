@@ -12,12 +12,9 @@
 
 <script>
 import mixin from './mixins'
-import { collectLogs } from './logs'
-const collectLogsMixin = collectLogs.getMixin() || {}
+// import { collectLogs, logsMixin } from './logs'
 export default {
-  mixins: [collectLogsMixin],
-  // mixins: [collectLogs.mixin],
-  // mixins: [mixin],
+  // mixins: [logsMixin],
   onShareAppMessage() {
     return {
       title: 'a 页面',
@@ -45,10 +42,10 @@ export default {
         //   test111: '000000000000000000'
         // })
 
-      // collectLogs.uniEmit()
-      console.log('------logs----->>>', logs.initConfig)
+      // console.log('------logs----->>>', collectLogs.initConfig)
 
       console.log('==========触发===========')
+      uni.$emit('logs')
       // uni.$emit('test')
     }
   }

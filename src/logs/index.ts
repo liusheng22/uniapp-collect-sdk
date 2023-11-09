@@ -8,7 +8,7 @@ import {
   lastUnusualReport
 } from './events'
 import { proxyComponentsEvents } from './lifecycle'
-import { mixins } from './mixins'
+import { useMixins } from './mixins'
 import { onApp } from './onApp'
 import { onError } from './onError'
 import { requestReportLog } from './report'
@@ -49,16 +49,9 @@ export class CollectLogs {
 
     // 监听component的methods
     // proxyComponentsTapEvents(this)
-
-    // const useMixins = mixins(this)
-    // this.mixin = useMixins()
   }
 
   public init(config: InitConfig) {
-    // const useMixins = mixins(this)
-    // this.mixin = useMixins()
-    this.uniOn(this)
-
     this.pages = uniPages?.pages || []
     this.vueApp = {}
 
@@ -170,26 +163,9 @@ export class CollectLogs {
     }
   }
 
-  public uniOn(that) {
-    console.log('----------初始化--------')
-    uni.$on('test', () => {
-      console.log('==========接受事件===========')
-      this.reportLog({
-        eventType: '00000000'
-      })
-    })
-  }
-
-  public uniEmit() {
-    console.log('==========出发===========')
-    uni.$emit('on')
-  }
-
-  // mixin
   public getMixin() {
-    // return this.mixin
-    const useMixins = mixins()
-    this.mixin = useMixins(this)
+    const mixins = useMixins()
+    this.mixin = mixins(this, true)
     return this.mixin
   }
 }

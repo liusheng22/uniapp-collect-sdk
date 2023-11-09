@@ -1,8 +1,7 @@
-// import { CollectLogs } from 'wxb-uniapp-collect-sdk'
 import Vue from 'vue'
 import App from './App'
 // import customButton from './pages/components/custom-button.vue'
-import testComponent from './components/test-component/test-component.vue'
+// import testComponent from './components/test-component/test-component.vue'
 import { collectLogs } from './pages/test/logs'
 
 import './uni.promisify.adaptor'
@@ -12,11 +11,16 @@ Vue.config.productionTip = false
 App.mpType = 'app'
 
 // 注册全局组件
-Vue.component('test-component', testComponent)
+// Vue.component('test-component', testComponent)
 // Vue.component('custom-button', customButton)
 
-// const collectLogs = new CollectLogs(Vue)
 Vue.prototype.$collectLogs = collectLogs
+// eslint-disable-next-line
+uni.$on('collectLogs', (data) => {
+  collectLogs.reportLog({
+    ...data
+  })
+})
 collectLogs.init({
   sourcePlatform: 'test-platform',
   uniqueId: 'test123',
@@ -47,20 +51,20 @@ collectLogs.init({
   },
 
   isShowLog: false,
-  isOnAppLifecycle: true,
+  isOnAppLifecycle: false,
   isOnPageLifecycle: true,
-  isTraceNetwork: true,
-  isTraceMemory: true,
+  isTraceNetwork: false,
+  isTraceMemory: false,
   isOnTapEvent: true,
-  isOnCaptureScreen: true
-}).catch((err) => { console.log('catch------', err) })
-
-collectLogs.customReport({
-  project: 'product_basic1',
-  eventType: 'test'
-}, {
-  test111: 'test1111'
+  isOnCaptureScreen: false
 })
+
+// collectLogs.customReport({
+//   project: 'product_basic1',
+//   eventType: 'test'
+// }, {
+//   test111: 'test1111'
+// })
 
 const app = new Vue({
   ...App

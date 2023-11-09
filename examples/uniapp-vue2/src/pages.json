@@ -1,7 +1,8 @@
 {
   "insetLoader": {
     "config": {
-      "testComponent": "<test-component></test-component>"
+      "testComponent": "<test-component></test-component>",
+      "mixinComponent": "<mixin-component></mixin-component>"
     },
     // 全局配置
     "label": ["testComponent"],
@@ -35,7 +36,9 @@
     {
       "path": "pages/test/b-nvue",
       "style": {
-        "navigationBarTitleText": "b-nvue页面"
+        "navigationBarTitleText": "b-nvue页面",
+        "label": ["mixinComponent"],
+        "rootEle": "view"
       }
     },
     {
