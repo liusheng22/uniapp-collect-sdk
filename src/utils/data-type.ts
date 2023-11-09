@@ -1,8 +1,8 @@
-const isObject = (obj: any) => {
+const isObject = (obj: object) => {
   return Object.prototype.toString.call(obj) === '[object Object]'
 }
 
-const isArray = (arr: any) => {
+const isArray = (arr: Array<any>) => {
   return Object.prototype.toString.call(arr) === '[object Array]'
 }
 
@@ -10,8 +10,16 @@ const isFunction = (fn: any) => {
   return Object.prototype.toString.call(fn) === '[object Function]'
 }
 
-const isBoolean = (bool: any) => {
+const isBoolean = (bool: boolean) => {
   return Object.prototype.toString.call(bool) === '[object Boolean]'
+}
+
+const isString = (str: string) => {
+  return Object.prototype.toString.call(str) === '[object String]'
+}
+
+const isValue = (value: any) => {
+  return value !== null && value !== undefined
 }
 
 /**
@@ -39,5 +47,7 @@ export {
   isArray,
   isFunction,
   isBoolean,
+  isString,
+  isValue,
   type
 }

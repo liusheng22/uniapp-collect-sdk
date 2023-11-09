@@ -38,8 +38,10 @@ export interface MpHook {
 }
 
 export interface InitConfig {
-  uniqueId?: string
-  sourcePlatform?: string
+  uniqueId: string
+  serverUrl: string
+  project: string
+  sourcePlatform: string
   customFields: any
   isShowLog?: boolean
   isOnAppLifecycle?: boolean

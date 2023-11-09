@@ -7,6 +7,7 @@ import { log } from '@/utils/console-log'
 import { isObject } from '@/utils/data-type'
 import { formatLibType } from '@/utils/params'
 import { getUuid, setUuid } from '@/utils/uuid'
+import { validateParams } from '@/utils/validate'
 
 /**
  * 上报日志
@@ -19,28 +20,22 @@ export async function requestReportLog(
   opts: ReportOpts,
   logs: CollectLogs
 ): Promise<any> {
-  const {
-    // id = '',
-    eventType,
-    referer
-  } = opts
-  let {
-    extendFields,
-    requestId = ''
-  } = opts
+  const { eventType, referer } = opts
+  let { extendFields = {}, requestId = '' } = opts
 
-  // 校验 extendFields
-  extendFields = extendFields || {}
+  // 校验字段
   if (!isObject(extendFields)) {
     extendFields = {}
-    log('「extendFields」必须是一个对象')
+    throw new Error('「extendFields」必须是一个对象')
+  }
+  const [validate, error] = validateParams(logs.initConfig)
+  if (validate) {
+    throw new Error(error)
   }
 
-  let { uniqueId } = logs.initConfig
-  const { sourcePlatform } = logs.initConfig
-  uniqueId = uniqueId || 'unknown'
+  const { uniqueId, sourcePlatform } = logs.initConfig
   requestId = `${Date.now()}_${uniqueId}`
-  const source_platform = sourcePlatform || 'unknown'
+
   const { networkType } = await wxb.getNetworkType()
   const {
     brand,
@@ -70,7 +65,7 @@ export async function requestReportLog(
 
   const baseParams = {
     id: setUuid(),
-    source_platform,
+    source_platform: sourcePlatform,
     // id,
     request_id: requestId,
     distinct_id: uniqueId,

@@ -14,11 +14,13 @@ import { onError } from './onError'
 import { proxyRequest } from './proxyRequest'
 import { requestReportLog } from './report'
 import { ReportOpts, InitConfig, Success, ResConfig } from '../types'
-import { wxb } from '@/constants'
+import { wxb, defaultConfig } from '@/constants'
 import { consoleLog } from '@/utils/console-log'
 import { validateParams } from '@/utils/validate'
 
 export class CollectLogs {
+  private static instance: CollectLogs | null = null
+
   public request: any
   public pages: any
   public logList: Array<ReportOpts>
@@ -28,58 +30,32 @@ export class CollectLogs {
   public Vue: any
 
   constructor(Vue: any) {
+    if (CollectLogs.instance) {
+      return CollectLogs.instance
+    }
+    // 初始化实例
+    CollectLogs.instance = this
+
     this.request = wxb.request
     this.logList = []
     this.pages = {}
     this.systemInfo = wxb.getSystemInfoSync()
     this.Vue = Vue
-    this.initConfig = {
-      customFields: {}
-    }
-
-    // 监听component的methods
-    // proxyComponentsTapEvents(this)
+    this.initConfig = defaultConfig
   }
 
   public init(config: InitConfig) {
-    const {
-      uniqueId,
-      customFields,
-      isShowLog = false,
-      isOnAppLifecycle = false,
-      isOnPageLifecycle = false,
-      isOnCaptureScreen = false,
-      isOnTapEvent = false,
-      isTraceNetwork = false,
-      isTraceMemory = false
-    } = config
     this.pages = uniPages?.pages || []
+    this.vueApp = {}
 
-    // if (!uniqueId) { throw new Error('缺少必要参数「uniqueId」,需要传入所采集的平台类型') }
-    // if (!openId) openId = 'unknown'
-
+    this.initConfig = { ...this.initConfig, ...config }
     // 校验字段
-    const [validate, error] = validateParams({
-      customFields
-    })
+    const [validate, error] = validateParams(this.initConfig)
     if (validate) {
       throw new Error(error)
     }
-
-    this.vueApp = {}
-    this.initConfig = {
-      ...config,
-      uniqueId,
-      isShowLog,
-      isOnAppLifecycle,
-      isOnPageLifecycle,
-      isTraceNetwork,
-      isTraceMemory
-    }
-
-    // proxyRequest(this)
-    // console.log输出
-    consoleLog(this)
+    const { isOnTapEvent, isOnPageLifecycle, isOnCaptureScreen, isTraceMemory, isOnAppLifecycle, isTraceNetwork } = this.initConfig
+   
     // 点击事件/路由事件
     proxyComponentsEvents({
       isOnTapEvent,
@@ -94,7 +70,6 @@ export class CollectLogs {
     if (isTraceNetwork) { onNetwork(this) }
     // 页面生命周期
     // if (isOnPageLifecycle) { proxyPageEvents(this) }
-    // proxyPageEvents(this)
 
     // 是否页面/应用的开启生命周期监听
     if (isOnAppLifecycle) {
@@ -102,11 +77,6 @@ export class CollectLogs {
       onError(this)
       lastUnusualReport(this)
     }
-
-    // let that = this
-
-    // let { uniqueId } = config
-    // this.initConfig = config
   }
 
   public async reportLog(obj: ReportOpts, logs: CollectLogs = this) {
