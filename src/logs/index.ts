@@ -10,11 +10,10 @@ import {
 import { proxyComponentsEvents } from './lifecycle'
 import { onApp } from './onApp'
 import { onError } from './onError'
-import { proxyRequest } from './proxyRequest'
 import { requestReportLog } from './report'
 import { ReportOpts, InitConfig, Success, ResConfig } from '../types'
-import { customFieldsStorageKey, wxb ,defaultConfig} from '@/constants'
-import { consoleLog } from '@/utils/console-log'
+import { customFieldsStorageKey, wxb, defaultConfig } from '@/constants'
+import { log } from '@/utils/console-log'
 import { isNull, isObject, isUndefined } from '@/utils/data-type'
 import { validateParams } from '@/utils/validate'
 
@@ -45,14 +44,18 @@ export class CollectLogs {
   }
 
   public init(config: InitConfig) {
+
     this.pages = uniPages?.pages || []
     this.vueApp = {}
 
     this.initConfig = { ...this.initConfig, ...config }
     // 校验字段
     const [validate, error] = validateParams(this.initConfig)
-    if (validate) {
-      throw new Error(error)
+
+    if (!validate) {
+      const msg = `埋点初始化失败：${error}`
+      log(msg)
+      return Promise.reject(msg)
     }
     const { isOnTapEvent, isOnPageLifecycle, isOnCaptureScreen, isTraceMemory, isOnAppLifecycle, isTraceNetwork } = this.initConfig
    
@@ -77,6 +80,22 @@ export class CollectLogs {
       onError(this)
       lastUnusualReport(this)
     }
+
+    log('埋点初始化成功')
+    return Promise.resolve()
+  }
+
+  // 自定义上报方法
+  public async customReport(opts: { project: string, eventType: string }, properties: unknown ) {
+    return new Promise((resolve, reject) => {
+      requestReportLog(opts, this, { ...opts, lib: { lib_method: 'CODE' }, properties } )
+        .then((data: any) => {
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
   }
 
   public async reportLog(obj: ReportOpts, logs: CollectLogs = this) {

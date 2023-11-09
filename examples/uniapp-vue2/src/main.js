@@ -19,6 +19,9 @@ Vue.prototype.$collectLogs = collectLogs
 collectLogs.init({
   sourcePlatform: 'test-platform',
   uniqueId: 'test123',
+  project: 'product_basic',
+  serverUrl: 'https://secretdata.test.wangxiaobao.com',
+
   isShowLog: false,
   isOnAppLifecycle: true,
   isOnPageLifecycle: true,
@@ -26,6 +29,13 @@ collectLogs.init({
   isTraceMemory: true,
   isOnTapEvent: true,
   isOnCaptureScreen: true
+}).catch((err) => { console.log('catch------', err) })
+
+collectLogs.customReport({
+  project: 'product_basic1',
+  eventType: 'test'
+}, {
+  test111: 'test1111'
 })
 
 const app = new Vue({
