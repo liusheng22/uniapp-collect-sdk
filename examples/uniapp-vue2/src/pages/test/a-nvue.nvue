@@ -17,7 +17,7 @@
 
     <image data-logs="猫-image" :src="img" mode="widthFix" @tap.prevent />
 
-    <!-- <test-component /> -->
+    <test-component />
   </div>
 </template>
 
@@ -40,27 +40,6 @@ export default {
   // onLoad(options) {
   //   // console.log('aaaa', this.appid)
   // },
-  onShow() {
-    uni.setStorageSync('test_obj', {
-      a: 1,
-      b: 2,
-    })
-    uni.setStorageSync('test_arr', [{
-      a: 1,
-      b: 2,
-      c: () => {
-        console.log('c', this.a)
-      }
-    }])
-    const func = () => {
-      console.log('func')
-    }
-    uni.setStorageSync('test_func', func)
-
-    console.log('test_obj', uni.getStorageSync('test_obj'))
-    console.log('test_arr', uni.getStorageSync('test_arr'))
-    console.log('test_func', uni.getStorageSync('test_func'))
-  },
   // onHide() {
   //   console.log('页面的 hide')
   // },

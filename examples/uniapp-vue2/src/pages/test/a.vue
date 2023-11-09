@@ -14,8 +14,13 @@
 
     <custom-button data-logs="自定义事件类型" data-type="custom-type" @tap="customClick">自定义埋点点击类型</custom-button>
     <custom-button data-logs="自动采集点击" @tap="customClick">埋点点击</custom-button>
-    <custom-button @tap="customClick">自定义点击</custom-button>
+    <custom-button data-logs="有tap的data-logs" @tap="customClick">有tap的自定义点击</custom-button>
+    <custom-button>无tap的自定义点击</custom-button>
+    <a href="http://baidu.com">123</a>
+    <navigator url="http://baidu.com">navigator123</navigator>
     <h1>{{ num }}</h1>
+
+    <input type="text" placeholder="请输入" />
 
     <img data-logs="猫-img" :src="img" mode="widthFix" @tap.stop />
 
