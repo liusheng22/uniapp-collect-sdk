@@ -44,11 +44,10 @@ export function sleep(time = 1500): Promise<void> {
 
 /**
  * 防抖
- *
- * * @param {*} func
+ * @param {*} func
  * @param {*} wait
  * @param {*} immediate 是否立即执行
- * @returns
+ * @returns function
  */
 export function debounce(func: any, wait: number, immediate: boolean) {
   let timeout, result
@@ -75,11 +74,10 @@ export function debounce(func: any, wait: number, immediate: boolean) {
 
 /**
  * 节流
- *
  * @param {*} func
  * @param {*} wait
  * @param {*} options  leading：false 表示禁用第一次执行 trailing: false 表示禁用停止触发的回调   leading：false 和 trailing: false 不能同时设置
- * @returns
+ * @returns function
  */
 export function throttle(func: any, wait: any, options: any) {
   let timeout, self, args

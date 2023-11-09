@@ -17,3 +17,5 @@ export const defaultConfig: InitConfig = {
   isTraceNetwork: false,
   isTraceMemory: false
 }
+export const customFieldsStorageKey = 'UNIAPP_COLLECT_SDK_SUPPLEMENT_CUSTOM_FIELDS'
+
