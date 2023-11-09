@@ -23,6 +23,7 @@ export async function requestReportLog(
   console.log('--- logs', logs)
   const {
     // id = '',
+
     eventType,
     referer
   } = opts
