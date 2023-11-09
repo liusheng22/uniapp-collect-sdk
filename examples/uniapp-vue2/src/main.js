@@ -4,6 +4,7 @@ import App from './App'
 // import customButton from './pages/components/custom-button.vue'
 import testComponent from './components/test-component/test-component.vue'
 import { collectLogs } from './pages/test/logs'
+
 import './uni.promisify.adaptor'
 
 Vue.config.productionTip = false

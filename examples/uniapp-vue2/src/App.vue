@@ -13,6 +13,13 @@
 </script>
 
 <style>
+.body {
+  display: flex;
+  flex-direction: column;
+  width: 750rpx;
+  flex: 1;
+}
+
 .button-default {
   background-color: #fff;
   border: 1px solid #ccc;

@@ -5,7 +5,7 @@
     },
     // 全局配置
     "label": ["testComponent"],
-    "rootEle": "div"
+    "rootEle": "view"
   },
   "pages": [ // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
@@ -30,6 +30,18 @@
       "path": "pages/test/a-nvue",
       "style": {
         "navigationBarTitleText": "a-nvue页面"
+      }
+    },
+    {
+      "path": "pages/test/b-nvue",
+      "style": {
+        "navigationBarTitleText": "b-nvue页面"
+      }
+    },
+    {
+      "path": "pages/test/c-nvue",
+      "style": {
+        "navigationBarTitleText": "c-nvue页面"
       }
     }
   ],

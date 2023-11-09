@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <view>
     <div class="center">a page</div>
     <button @tap="link('/pages/test/b')">to b page</button>
     <view class="button-default" @tap="link('/pages/test/c')">to c page</view>
@@ -27,7 +27,7 @@
     <image data-logs="猫-image" :src="img" mode="widthFix" @tap.prevent />
 
     <!-- <test-component /> -->
-  </div>
+  </view>
 </template>
 
 <script>
@@ -46,6 +46,9 @@ export default {
       img: 'https://img.yzcdn.cn/vant/cat.jpeg',
     }
   },
+  // onShow() {
+  //   console.log('-----tes-t-se-res--adfs--afdsa-f-s---')
+  // },
   // onLoad(options) {
   //   // console.log('aaaa', this.appid)
   // },

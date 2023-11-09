@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <view>
     <div class="center">c page</div>
     <button @tap="link('/pages/test/a')">to a page</button>
     <view class="button-default" @tap="link('/pages/test/b')">to b page</view>
-  </div>
+  </view>
 </template>
 
 <script>

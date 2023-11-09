@@ -129,7 +129,8 @@ export async function requestReportLog(
     properties,
     lib
   }
-  log('上报数据:', baseParams, properties)
+  // log('上报数据:', baseParams, properties)
+  log('上报数据:', { ...baseParams, properties })
 
   return new Promise((resolve, reject) => {
     logs.request({

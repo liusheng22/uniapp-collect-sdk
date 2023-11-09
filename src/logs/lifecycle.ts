@@ -31,10 +31,15 @@ function createVueLifecycle(isOnPageLifecycle: boolean, logs: CollectLogs) {
      * - 所以通过判断options的值是否为undefined，来确定是否为onAppShow事件
      */
     onShow(options: any) {
+      uni.showModal({
+        title: 'onShow',
+        content: activityPage().route,
+        showCancel: true
+      })
+      console.log('自己创建的mixin onShow')
       // #ifdef APP-PLUS
       if (!isOnPageLifecycle) { return }
       if (options) { return }
-      console.log('自己创建的mixin onShow')
       requestReportLog({
         referer: previousPage,
         eventType: 'page_view'
@@ -57,6 +62,11 @@ function createVueLifecycle(isOnPageLifecycle: boolean, logs: CollectLogs) {
      * - 所以通过防抖函数来过滤掉onHide事件的一次触发
      */
     onHide: debounce(async function () {
+      uni.showModal({
+        title: 'onHide',
+        content: activityPage().route,
+        showCancel: true
+      })
       // #ifdef APP-PLUS
       if (!isOnPageLifecycle) { return }
       console.log('自己创建的mixin onHide')
@@ -66,6 +76,11 @@ function createVueLifecycle(isOnPageLifecycle: boolean, logs: CollectLogs) {
 
     }, 300, true),
     onUnload() {
+      uni.showModal({
+        title: 'onUnload',
+        content: activityPage().route,
+        showCancel: true
+      })
       // #ifdef APP-PLUS
       if (!isOnPageLifecycle) { return }
       console.log('自己创建的mixin onUnload')

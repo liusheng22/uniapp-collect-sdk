@@ -17,10 +17,9 @@ export function consoleLog(logs: CollectLogs) {
       oldLog.apply(this, arg)
     }
   }
+
+  const oldErr = err
   err = function (...arg) {
-    const { isShowLog } = logs.initConfig
-    if (isShowLog) {
-      oldLog.apply(this, arg)
-    }
+    oldErr.apply(this, arg)
   }
 }
