@@ -11,10 +11,11 @@
 </template>
 
 <script>
-import mixin from './mixins'
-// import { collectLogs, logsMixin } from './logs'
+import { collectLogs, useGlobalApp } from './logs'
+const globalApp = useGlobalApp()
+const logsMixin = globalApp()
 export default {
-  // mixins: [logsMixin],
+  mixins: [logsMixin],
   onShareAppMessage() {
     return {
       title: 'a 页面',

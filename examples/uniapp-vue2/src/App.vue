@@ -1,15 +1,20 @@
 <script>
-	export default {
-		onLaunch: function() {
-			// console.log('----- App Launch -----')
-		},
-		onShow: function() {
-			// console.log('----- App Show -----')
-		},
-		onHide: function() {
-      // console.log('----- App Hide -----')
-		}
-	}
+import { collectLogs } from './pages/test/logs'
+
+export default {
+  globalData: {
+    collectLogs
+  },
+  onLaunch: function() {
+    // console.log('----- App Launch -----')
+  },
+  onShow: function() {
+    // console.log('----- App Show -----')
+  },
+  onHide: function() {
+    // console.log('----- App Hide -----')
+  }
+}
 </script>
 
 <style>

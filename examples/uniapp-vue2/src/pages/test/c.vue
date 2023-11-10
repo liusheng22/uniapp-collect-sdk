@@ -34,5 +34,14 @@ export default {
 }
 </script>
 
+
+<!-- <script module="testLogs" lang="renderjs">
+export default {
+  mounted() {
+    console.log('-----test logs-----')
+  }
+}
+</script> -->
+
 <style lang="scss" scoped>
 </style>

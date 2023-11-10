@@ -7,7 +7,11 @@
 </template>
 
 <script>
+import { useGlobalApp } from './logs'
+const globalApp = useGlobalApp()
+const logsMixin = globalApp()
 export default {
+  mixins: [logsMixin],
   // 数据状态
   data() {
     return {}
