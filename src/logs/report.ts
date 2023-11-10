@@ -21,7 +21,7 @@ export async function requestReportLog(
   opts: ReportOpts,
   logs: CollectLogs,
 ): Promise<any> {
-  const { referer, eventType = '', libMethod = '', project: optProject } = opts
+  const { referer, customTitle, eventType = '', libMethod = '', project: optProject } = opts
   let { requestId = '', extendFields = {} } = opts
 
   // 校验字段
@@ -75,9 +75,10 @@ export async function requestReportLog(
   const pagePath = route || 'unknown'
   const pageQuery = JSON.stringify(query)
   const libType = formatLibType(uniPlatform, osName)
+  const reportId = eventType === 'page_view' ? getUuid() : ''
 
   const baseParams = {
-    id: setUuid(),
+    id: reportId,
     source_platform: sourcePlatform,
     // id,
     request_id: requestId,
@@ -98,10 +99,11 @@ export async function requestReportLog(
   // 获取用户后续补充的自定义字段
   const fieldData = logs.supplementFields
   const supplementFields = isObject(fieldData) ? fieldData : {}
+  const pageTitle = navigationBarTitleText || titleText || customTitle
   const properties = {
     project_account: '',
     group_account: '',
-    page_title: navigationBarTitleText || titleText,
+    page_title: pageTitle,
     page_id: pagePath,
     page_query: pageQuery,
     referer,
@@ -130,7 +132,12 @@ export async function requestReportLog(
     lib
   }
   // log('上报数据:', baseParams, properties)
-  log('上报数据:', { ...baseParams, properties })
+  console.log(JSON.stringify({
+    id: baseParams.id,
+    event: baseParams.event,
+    distinct_id: baseParams.distinct_id,
+    ...properties
+  }))
 
   return new Promise((resolve, reject) => {
     logs.request({
@@ -145,16 +152,18 @@ export async function requestReportLog(
 }
 
 export const requestHeartBeat = (logs: CollectLogs) => {
+  const { serverUrl } = logs.initConfig
+  const eventIds = getUuid()
   logs.request({
-    url: apiUrls.heartBeat,
+    url: serverUrl + apiUrls.heartBeat,
     method: 'GET',
     header: { isReportRequest: 1 },
     data: {
-      eventIds: getUuid(),
+      eventIds,
       reportType: 1
     },
     success: () => {
-      console.log('心跳上报成功')
+      console.log(`心跳上报成功: ' ${eventIds}`)
     },
     fail: () => {
       console.log('心跳上报失败')

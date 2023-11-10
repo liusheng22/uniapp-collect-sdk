@@ -1,4 +1,5 @@
 // 全局兼容uni
+declare let plus: any
 declare let uni: any
 declare let wx: any
 declare let tt: any

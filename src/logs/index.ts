@@ -11,7 +11,7 @@ import { proxyComponentsEvents } from './lifecycle'
 import { useMixins } from './mixins'
 import { onApp } from './onApp'
 import { onError } from './onError'
-import { requestReportLog } from './report'
+import { requestHeartBeat, requestReportLog } from './report'
 import { ReportOpts, InitConfig, Success, ResConfig, ExtendFields } from '../types'
 import { customFieldsStorageKey, wxb, defaultConfig } from '@/constants'
 import { deepClone } from '@/utils/clone'
@@ -115,6 +115,11 @@ export class CollectLogs {
           reject(err)
         })
     })
+  }
+
+  // requestHeartBeat
+  public reportHeartBeat(logs: CollectLogs = this) {
+    requestHeartBeat(logs)
   }
 
   /**

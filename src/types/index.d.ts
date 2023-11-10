@@ -21,11 +21,13 @@ export interface ReportOpts {
   // id?: string,
   referer?: string
   extendFields?: ExtendFields
-
+  loadOptions?: any
+  customTitle?: string
+  requestId?: string
+  // 下面的字段逐步移除
   errorType?: string
   errorInfo?: any
   params?: any
-  requestId?: string
   apiQuery?: string
   isClearLog?: boolean
 }
@@ -43,12 +45,12 @@ export interface MpHook {
 export interface CustomFields {
   [key: string]: {
     value: string | number | boolean | object
-    key: string 
+    key: string
   }
 }
 
 export interface ExtendFields {
-  [key: string]:  string | number | boolean 
+  [key: string]:  string | number | boolean
 }
 
 export interface InitConfig {
