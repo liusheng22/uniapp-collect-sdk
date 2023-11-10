@@ -1,8 +1,7 @@
 import { err } from './console-log'
 import { isArray, isFunction, isObject } from './data-type'
-import { validateKeywords } from './validate'
 import { wxb } from '@/constants'
-import { PageOpts } from '@/types'
+import { CustomFields, ExtendFields, PageOpts } from '@/types'
 
 /**
  * 格式化时间
@@ -137,18 +136,25 @@ export const getAppCurrPageView = () => {
   return titleNView || { titleText: '' }
 }
 
-export const getCustomFields = (customFields: any) => {
+/**
+ * @description 获取自定义字段
+ * @param customFields
+ * @returns object
+ */
+
+export const getCustomFields = (customFields: CustomFields): ExtendFields => {
   let extendFields = {}
   Object.keys(customFields).forEach((key) => {
-    const itemObj = customFields[key]
-    if (itemObj['value'] && !isFunction(itemObj['value']) && !isArray(itemObj['value'])) {
-      extendFields[key] = itemObj['value']
+    const field = customFields[key]
+    const fieldValue = field['value']
+    if (fieldValue && !isFunction(fieldValue) && !isArray(fieldValue)) {
+      extendFields[key] = fieldValue
       return
     }
-    const getKey = itemObj['key']
-    if (!getKey ) { return }
+    const fieldKey = field['key']
+    if (!fieldKey ) { return }
 
-    const getStoreValue = wxb.getStorageSync(getKey)
+    const getStoreValue = wxb.getStorageSync(fieldKey)
     if (isFunction(getStoreValue) && isArray(getStoreValue)) { return }
     if (isObject(getStoreValue)) {
       extendFields = { ...extendFields, ...getStoreValue }

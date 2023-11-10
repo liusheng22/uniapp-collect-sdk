@@ -11,7 +11,7 @@ import { proxyComponentsEvents } from './lifecycle'
 import { onApp } from './onApp'
 import { onError } from './onError'
 import { requestReportLog } from './report'
-import { ReportOpts, InitConfig, Success, ResConfig } from '../types'
+import { ReportOpts, InitConfig, Success, ResConfig, ExtendFields } from '../types'
 import { customFieldsStorageKey, wxb, defaultConfig } from '@/constants'
 import { deepClone } from '@/utils/clone'
 import { log } from '@/utils/console-log'
@@ -92,7 +92,7 @@ export class CollectLogs {
   }
 
   // 自定义上报方法
-  public async customReport(opts: { project: string, eventType: string }, properties: unknown ) {
+  public async customReport(opts: { project: string, eventType: string }, properties: ExtendFields = {} ) {
     return new Promise((resolve, reject) => {
       requestReportLog({ ...opts, libMethod: 'CODE', extendFields: properties }, this )
         .then((data: any) => {

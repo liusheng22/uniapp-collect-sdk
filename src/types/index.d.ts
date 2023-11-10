@@ -20,8 +20,7 @@ export interface ReportOpts {
   loadOptions?: any
   // id?: string,
   referer?: string
-  loadOptions?: any
-  extendFields?: any
+  extendFields?: ExtendFields
 
   errorType?: string
   errorInfo?: any
@@ -41,13 +40,23 @@ export interface MpHook {
   [key: string]: boolean
 }
 
+export interface CustomFields {
+  [key: string]: {
+    value: string | number | boolean | object
+    key: string 
+  }
+}
+
+export interface ExtendFields {
+  [key: string]:  string | number | boolean 
+}
 
 export interface InitConfig {
   uniqueId: string
   serverUrl: string
   project: string
   sourcePlatform: string
-  customFields: any
+  customFields: CustomFields
   isShowLog?: boolean
   isOnAppLifecycle?: boolean
   isOnPageLifecycle?: boolean
