@@ -47,9 +47,9 @@ export async function requestReportLog(
   if (customFields && !isObject(customFields)) {
     const msg = '埋点error:「customFields」必须是一个对象'
     err(msg)
-    return Promise.reject(msg)
+  } else {
+    extendFields = { ...extendFields, ...getCustomFields(customFields) }
   }
-  extendFields = getCustomFields(customFields)
 
   const { networkType } = await wxb.getNetworkType()
   requestId = `${Date.now()}_${uniqueId}`
