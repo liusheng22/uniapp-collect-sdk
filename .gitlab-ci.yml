@@ -11,6 +11,6 @@ publish:prod:
   image: ${NODEJS_IMAGE}
   script:
     - pnpm i
-    - pnpm -r publish --no-git-checks --access public
+    - pnpm -r publish /bin --no-git-checks --access public
   only:
     - tags
