@@ -15,11 +15,15 @@
   "publishConfig": {
     "registry": "http://nexus3.wangxiaobao.com/repository/wxp-private/"
   },
+  "files": [
+    "bin"
+  ],
   "scripts": {
     "dev": "ttsc -w",
     "dev:watch": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
-    "build": "tsc && tsc-alias",
+    "build": "tsc && tsc-alias && npm run cp-types",
     "release": "tsc && npm publish",
+    "cp-types": "copyfiles types/* bin",
     "eslint": "eslint . --fix --ext .ts",
     "prepare": "husky install",
     "vue2-wx": "cd examples/uniapp-vue2 && npm run dev:mp-weixin",

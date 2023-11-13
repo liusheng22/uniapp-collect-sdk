@@ -1,2 +1,11 @@
 /examples
 /src
+
+.husky
+.vscode
+.editorconfig
+.eslintignore
+.eslintrc.js
+.gitignore
+.prettierrc.js
+commitlint.config.js
