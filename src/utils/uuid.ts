@@ -1,4 +1,5 @@
-import { wxb } from '@/constants/index'
+import { CollectLogs } from '..'
+import { wxb, uuidStorageKey } from '@/constants/index'
 
 export const uuid = () => {
   const str = 'xxxxxxxx-xxxx-yxyx-xyxy-xxxxxxxxxxxx'.replace(
@@ -12,14 +13,16 @@ export const uuid = () => {
   return str.replace(/-/g, '')
 }
 
-export const setUuid = () => {
+export const setUuid = (logs: CollectLogs) => {
   const id = uuid()
-  wxb.setStorageSync('uuid', id)
+  logs.uuid = id
+  wxb.setStorageSync(uuidStorageKey, id)
   return id
 }
 
-export const getUuid = () => {
-  const id = wxb.getStorageSync('uuid')
-  wxb.removeStorageSync('uuid')
-  return id || setUuid()
+export const getUuid = (logs: CollectLogs) => {
+  const { uuid: id } = logs
+  logs.uuid = ''
+  wxb.removeStorageSync(uuidStorageKey)
+  return id || uuid()
 }

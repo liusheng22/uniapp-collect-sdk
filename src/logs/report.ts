@@ -2,12 +2,12 @@ import { ReportOpts } from '../types'
 import { CollectLogs } from '.'
 import { wxb } from '@/constants'
 import { apiUrls } from '@/constants/api'
-import { activityPage, getAppCurrPageView, getPageInfo } from '@/utils'
+import { activityPage, getAppCurrPageView, getPageInfo, sleep } from '@/utils'
 import { getCustomFields } from '@/utils'
 import { log, err } from '@/utils/console-log'
 import { isObject, type } from '@/utils/data-type'
 import { formatLibType } from '@/utils/params'
-import { getUuid, uuid } from '@/utils/uuid'
+import { getUuid, setUuid, uuid } from '@/utils/uuid'
 import { validateParams } from '@/utils/validate'
 
 /**
@@ -93,7 +93,8 @@ export async function requestReportLog(
   const pagePath = route || 'unknown'
   const pageQuery = JSON.stringify(query)
   const libType = formatLibType(uniPlatform, osName)
-  const reportId = eventType === 'page_view' ? getUuid() : uuid()
+  await sleep(500)
+  const reportId = eventType === 'page_view' ? setUuid(logs) : uuid()
 
   const baseParams = {
     id: reportId,
@@ -166,7 +167,7 @@ export async function requestReportLog(
 
 export const requestHeartBeat = (logs: CollectLogs) => {
   const { serverUrl } = logs.initConfig
-  const eventIds = getUuid()
+  const eventIds = getUuid(logs)
   logs.request({
     url: serverUrl + apiUrls.heartBeat,
     method: 'GET',
@@ -176,7 +177,7 @@ export const requestHeartBeat = (logs: CollectLogs) => {
       reportType: 1
     },
     success: () => {
-      console.log(`心跳上报成功: ' ${eventIds}`)
+      console.log(`心跳上报成功: ${eventIds}`)
     },
     fail: () => {
       console.log('心跳上报失败')

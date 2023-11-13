@@ -17,5 +17,9 @@ export const defaultConfig: InitConfig = {
   isTraceNetwork: false,
   isTraceMemory: false
 }
+
+// 存自定义字段的key - 仅用于查看
 export const customFieldsStorageKey = 'UNIAPP_COLLECT_SDK_SUPPLEMENT_CUSTOM_FIELDS'
+// 存uuid的key - 仅用于查看
+export const uuidStorageKey = 'UNIAPP_COLLECT_SDK_UUID'
 

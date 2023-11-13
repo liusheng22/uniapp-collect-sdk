@@ -18,6 +18,8 @@ module.exports = {
     // 允许使用 arguments
     'prefer-rest-params': 0,
     // 允许使用 ts-ignore
-    '@typescript-eslint/ban-ts-comment': 0
+    '@typescript-eslint/ban-ts-comment': 0,
+    // 文件末行保留一行空行
+    'eol-last': ['error', 'always']
   }
 }

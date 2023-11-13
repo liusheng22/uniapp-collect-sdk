@@ -5,7 +5,7 @@ export const useMixins = () => {
   let previousPage = activityPage().route
   let isIos = false
   // #ifdef APP-PLUS
-  isIos = (plus.os.name == 'iOS')
+  isIos = (plus.os.name === 'iOS')
   // #endif
 
   const mixin = (logs: any, isNvue = false) => {

@@ -43,7 +43,6 @@ function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: C
   //   componentOptions.methods['onLoad'] = function (args: any) {
   //     console.log('onLoad====>', activityPage().route, args)
   //     // logs.reportLog({
-  //     //   id: getUuid(),
   //     //   eventType: 'page_view',
   //     //   errorInfo: activityPage().route,
   //     //   loadOptions: activityPage().options
@@ -60,7 +59,6 @@ function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: C
       console.log('onShow====>', activityPage().route)
       await requestReportLog({
         referer: previousPage,
-        // id: setUuid(),
         eventType: 'page_view'
       }, logs)
       // previousPage = activityPage().route

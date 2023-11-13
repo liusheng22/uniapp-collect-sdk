@@ -30,6 +30,7 @@ export class CollectLogs {
   public supplementFields: any
   public vueApp: any
   public Vue: any
+  public uuid: string
   public mixin: any
   public isInit = false
   public static getInstance(Vue: any) {
@@ -52,6 +53,7 @@ export class CollectLogs {
     this.pages = {}
     this.systemInfo = wxb.getSystemInfoSync()
     this.Vue = Vue
+    this.uuid = ''
     this.initConfig = defaultConfig
     this.supplementFields = {}
   }
