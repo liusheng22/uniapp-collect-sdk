@@ -1,5 +1,5 @@
 node_modules
-/bin
+# /bin
 
 # local env files
 .env.local
