@@ -50,7 +50,7 @@ collectLogs.init({
     }
   },
 
-  isShowLog: false,
+  isShowLog: true,
   isOnAppLifecycle: false,
   isOnPageLifecycle: true,
   isTraceNetwork: false,

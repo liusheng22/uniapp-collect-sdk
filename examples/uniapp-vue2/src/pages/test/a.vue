@@ -81,10 +81,10 @@ export default {
       //   eventType: 'test-click'
       // })
 
-      collectLogs.updateCustomFields({
-        a: 1,
-        b: 2,
-      })
+      // collectLogs.updateCustomFields({
+      //   a: 1,
+      //   b: 2,
+      // })
     },
     customClick() {
       this.num++
@@ -93,6 +93,30 @@ export default {
       // })
       // this.$collectLogs.reportLog({
       //   eventType: 'custom-click'
+      // })
+
+      // collectLogs.customReport({
+      //   project: 'product_basic1',
+      //   eventType: 'custom-click'
+      // }, {
+      //   c1: 111,
+      //   d1: 2222
+      // })
+
+      // collectLogs.customReport({
+      //   project: 'product_basic1',
+      //   eventType: 'custom-click'
+      // }, null)
+
+      // collectLogs.customReport({
+      //   project: 'product_basic1',
+      //   eventType: 'custom-click'
+      // }, '测试其他数据类型')
+
+      // collectLogs.customReport(
+      //   null,{
+      //   c1: 111,
+      //   d1: 2222
       // })
     }
   }
