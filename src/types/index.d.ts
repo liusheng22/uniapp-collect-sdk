@@ -11,20 +11,28 @@ export interface Fail {
 }
 
 export interface ReportOpts {
-  // eventType: string
+  project?: string
+  eventType?: string
+  libMethod?: string
   eventType?: string
   loadOptions?: any
-  // id?: string,
   referer?: string
+  extendFields?: ExtendFields
+  extendProps?: ExtendFields
   loadOptions?: any
-  extendFields?: any
-
+  customTitle?: string
+  requestId?: string
+  // 下面的字段逐步移除
   errorType?: string
   errorInfo?: any
   params?: any
-  requestId?: string
   apiQuery?: string
   isClearLog?: boolean
+}
+
+export interface CustomReportOpts {
+  project: string
+  eventType: string
 }
 
 export interface ResConfig {
@@ -37,10 +45,23 @@ export interface MpHook {
   [key: string]: boolean
 }
 
+export interface CustomFields {
+  [key: string]: {
+    value: string | number | boolean | object
+    key: string
+  }
+}
+
+export interface ExtendFields {
+  [key: string]:  string | number | boolean
+}
+
 export interface InitConfig {
-  uniqueId?: string
-  sourcePlatform?: string
-  customFields: any
+  uniqueId: string
+  serverUrl: string
+  project: string
+  sourcePlatform: string
+  customFields: CustomFields
   isShowLog?: boolean
   isOnAppLifecycle?: boolean
   isOnPageLifecycle?: boolean

@@ -94,7 +94,7 @@
     "jest": "^25.4.0",
     "postcss-comment": "^2.0.0",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
-    "wxb-uniapp-inset-loader": "^0.0.3"
+    "wxb-uniapp-inset-loader": "^0.0.5"
   },
   "browserslist": [
     "Android >= 4.4",

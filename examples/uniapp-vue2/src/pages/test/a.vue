@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <view>
     <div class="center">a page</div>
     <button @tap="link('/pages/test/b')">to b page</button>
     <view class="button-default" @tap="link('/pages/test/c')">to c page</view>
@@ -14,15 +14,20 @@
 
     <custom-button data-logs="自定义事件类型" data-type="custom-type" @tap="customClick">自定义埋点点击类型</custom-button>
     <custom-button data-logs="自动采集点击" @tap="customClick">埋点点击</custom-button>
-    <custom-button @tap="customClick">自定义点击</custom-button>
+    <custom-button data-logs="有tap的data-logs" @tap="customClick">有tap的自定义点击</custom-button>
+    <custom-button>无tap的自定义点击</custom-button>
+    <a href="http://baidu.com">123</a>
+    <navigator url="http://baidu.com">navigator123</navigator>
     <h1>{{ num }}</h1>
+
+    <input type="text" placeholder="请输入" />
 
     <img data-logs="猫-img" :src="img" mode="widthFix" @tap.stop />
 
     <image data-logs="猫-image" :src="img" mode="widthFix" @tap.prevent />
 
     <!-- <test-component /> -->
-  </div>
+  </view>
 </template>
 
 <script>
@@ -41,6 +46,9 @@ export default {
       img: 'https://img.yzcdn.cn/vant/cat.jpeg',
     }
   },
+  // onShow() {
+  //   console.log('-----tes-t-se-res--adfs--afdsa-f-s---')
+  // },
   // onLoad(options) {
   //   // console.log('aaaa', this.appid)
   // },
@@ -73,10 +81,10 @@ export default {
       //   eventType: 'test-click'
       // })
 
-      collectLogs.updateCustomFields({
-        a: 1,
-        b: 2,
-      })
+      // collectLogs.updateCustomFields({
+      //   a: 1,
+      //   b: 2,
+      // })
     },
     customClick() {
       this.num++
@@ -85,6 +93,30 @@ export default {
       // })
       // this.$collectLogs.reportLog({
       //   eventType: 'custom-click'
+      // })
+
+      // collectLogs.customReport({
+      //   project: 'product_basic1',
+      //   eventType: 'custom-click'
+      // }, {
+      //   c1: 111,
+      //   d1: 2222
+      // })
+
+      // collectLogs.customReport({
+      //   project: 'product_basic1',
+      //   eventType: 'custom-click'
+      // }, null)
+
+      // collectLogs.customReport({
+      //   project: 'product_basic1',
+      //   eventType: 'custom-click'
+      // }, '测试其他数据类型')
+
+      // collectLogs.customReport(
+      //   null,{
+      //   c1: 111,
+      //   d1: 2222
       // })
     }
   }

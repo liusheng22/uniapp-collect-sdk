@@ -4,6 +4,10 @@ export let log = (...args: any[]) => {
   console.log(...args)
 }
 
+export let err = (...args: any[]) => {
+  console.error(...args)
+}
+
 // 重写 console.log
 export function consoleLog(logs: CollectLogs) {
   const oldLog = log
@@ -12,5 +16,10 @@ export function consoleLog(logs: CollectLogs) {
     if (isShowLog) {
       oldLog.apply(this, arg)
     }
+  }
+
+  const oldErr = err
+  err = function (...arg) {
+    oldErr.apply(this, arg)
   }
 }

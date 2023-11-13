@@ -1,74 +1,32 @@
 <template>
-  <div>
+  <view>
     <div class="center">a nvue page</div>
+    <!-- <mixin-component /> -->
     <button @tap="link('/pages/test/b')">to b page</button>
-    <view class="button-default" @tap="link('/pages/test/c')">to c page</view>
+    <button @tap="link('/pages/test/b-nvue')">to b nvue page</button>
+    <view class="button-default" @tap="link('/pages/test/c-nvue')">to c nvue page</view>
 
-    <div @tap="customClick" data-logs="dev自动采集点击" style="margin:30rpx 0;">自定义点击测试</div>
-
-    <button data-logs="test-123" @tap="testClick">测试按钮</button>
-
-    <custom-button data-logs="自定义事件类型" data-type="custom-type" @tap="customClick">自定义埋点点击类型</custom-button>
-    <custom-button data-logs="自动采集点击" @tap="customClick">埋点点击</custom-button>
-    <custom-button @tap="customClick">自定义点击</custom-button>
-    <h1>{{ num }}</h1>
-
-    <img data-logs="猫-img" :src="img" mode="widthFix" @tap.stop />
-
-    <image data-logs="猫-image" :src="img" mode="widthFix" @tap.prevent />
-
-    <!-- <test-component /> -->
-  </div>
+    <view style="margin: 30px 0;width: 100%;height: 100px;border: 1px solid #000;" @tap="clickReport">clickReport</view>
+  </view>
 </template>
 
 <script>
-import { collectLogs } from './logs'
-import CustomButton from '../components/custom-button.vue'
-
+import { collectLogs, useGlobalApp } from './logs'
+const globalApp = useGlobalApp()
+const logsMixin = globalApp()
 export default {
-  components: {
-    CustomButton
-  },
-  mixins: [],
-  // 数据状态
-  data() {
-    return {
-      num: 1,
-      img: 'https://img.yzcdn.cn/vant/cat.jpeg',
-    }
-  },
-  // onLoad(options) {
-  //   // console.log('aaaa', this.appid)
-  // },
-  onShow() {
-    uni.setStorageSync('test_obj', {
-      a: 1,
-      b: 2,
-    })
-    uni.setStorageSync('test_arr', [{
-      a: 1,
-      b: 2,
-      c: () => {
-        console.log('c', this.a)
-      }
-    }])
-    const func = () => {
-      console.log('func')
-    }
-    uni.setStorageSync('test_func', func)
-
-    console.log('test_obj', uni.getStorageSync('test_obj'))
-    console.log('test_arr', uni.getStorageSync('test_arr'))
-    console.log('test_func', uni.getStorageSync('test_func'))
-  },
-  // onHide() {
-  //   console.log('页面的 hide')
-  // },
-  // 分享
+  mixins: [logsMixin],
   onShareAppMessage() {
     return {
       title: 'a 页面',
     }
+  },
+  onShow() {
+    // uni.showModal({
+    //   title: 'nvue onShow',
+    //   content: '',
+    //   showCancel: true
+    // })
   },
   // 方法
   methods: {
@@ -80,46 +38,20 @@ export default {
     noop() {
       // console.log('noop')
     },
-    testClick() {
-      this.num++
-      console.log('testClick')
-      // this.$collectLogs.reportLog({
-      //   eventType: 'test-click'
-      // })
-    },
-    customClick() {
-      this.num++
-      // collectLogs.reportLog({
-      //   eventType: 'custom-click'
-      // })
-      // this.$collectLogs.reportLog({
-      //   eventType: 'custom-click'
-      // })
+    clickReport() {
+      // collectLogs.customReport({}, {
+        //   test111: '000000000000000000'
+        // })
+
+      // console.log('------logs----->>>', collectLogs.initConfig)
+
+      console.log('==========触发===========')
+      uni.$emit('logs')
+      // uni.$emit('test')
     }
   }
 }
 </script>
-
-<!--
-<script module="logs" lang="renderjs">
-export default {
-  mounted() {
-    // 监听全局点击事件
-    document.addEventListener('click', this.clickHandler)
-  },
-  methods: {
-    clickHandler(e) {
-      const { target } = e
-      const { dataset } = target
-      const { logs, type } = dataset
-      // if (logs) {
-      //   console.log('logs', logs)
-      //   console.log('type', type)
-      // }
-    }
-  }
-}
-</script> -->
 
 <style lang="scss" scoped>
 </style>

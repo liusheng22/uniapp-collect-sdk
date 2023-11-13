@@ -1,12 +1,20 @@
 {
-  "name": "uni-collect-ts",
-  "version": "1.0.0",
-  "description": "",
-  "author": "",
+  "name": "wxb-uniapp-collect-sdk",
+  "version": "0.0.1",
+  "description": "用于uniapp项目埋点",
+  "author": "刘胜",
   "license": "ISC",
+  "homepage": "http://gitlab.wangxiaobao.com/npm/wxb-uniapp-collect-sdk",
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.wangxiaobao.com/npm/wxb-uniapp-collect-sdk"
+  },
   "keywords": [],
   "main": "bin/index.js",
   "types": "bin/index.d.ts",
+  "publishConfig": {
+    "registry": "http://nexus3.wangxiaobao.com/repository/wxp-private/"
+  },
   "scripts": {
     "dev": "ttsc -w",
     "dev:watch": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",

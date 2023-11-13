@@ -1,12 +1,14 @@
 import { ReportOpts } from '../types'
 import { CollectLogs } from '.'
-import { customFieldsStorageKey, wxb } from '@/constants'
+import { wxb } from '@/constants'
 import { apiUrls } from '@/constants/api'
 import { activityPage, getAppCurrPageView, getPageInfo } from '@/utils'
-import { log } from '@/utils/console-log'
-import { isObject } from '@/utils/data-type'
+import { getCustomFields } from '@/utils'
+import { log, err } from '@/utils/console-log'
+import { isObject, type } from '@/utils/data-type'
 import { formatLibType } from '@/utils/params'
-import { getUuid, setUuid } from '@/utils/uuid'
+import { getUuid, uuid } from '@/utils/uuid'
+import { validateParams } from '@/utils/validate'
 
 /**
  * 上报日志
@@ -17,33 +19,60 @@ import { getUuid, setUuid } from '@/utils/uuid'
  */
 export async function requestReportLog(
   opts: ReportOpts,
-  logs: CollectLogs
+  logs: CollectLogs,
 ): Promise<any> {
-  console.log('--- opts', opts)
-  console.log('--- logs', logs)
   const {
-    // id = '',
-    eventType,
-    referer
+    referer,
+    customTitle,
+    eventType = '',
+    libMethod = '',
+    extendFields = {},
+    extendProps = {},
+    project: optProject
   } = opts
-  let {
-    extendFields,
-    requestId = ''
-  } = opts
+  let { requestId = '' } = opts
 
-  // 校验 extendFields
-  extendFields = extendFields || {}
-  if (!isObject(extendFields)) {
-    extendFields = {}
-    log('「extendFields」必须是一个对象')
+  // 校验字段
+  const [validate, error] = validateParams(logs.initConfig)
+  if (!validate) {
+    const msg = `埋点error:${error}`
+    err(msg)
+    return Promise.reject(msg)
+  }
+  if (extendFields && !isObject(extendFields)) {
+    const msg = '埋点error:「extendFields」必须是一个对象'
+    err(msg)
+    return Promise.reject(msg)
+  }
+  if (extendProps && !isObject(extendProps)) {
+    const msg = `埋点error:「customReport」方法调用失败，自定义上报的属性不可以是一个${type(extendProps)}`
+    err(msg)
+    return Promise.reject(msg)
+  }
+  if (!eventType) {
+    const msg = '埋点error:「eventType」必须是一个字符串或缺少该字段'
+    err(msg)
+    return Promise.reject(msg)
   }
 
-  let { uniqueId } = logs.initConfig
-  const { sourcePlatform } = logs.initConfig
-  uniqueId = uniqueId || 'unknown'
-  requestId = `${Date.now()}_${uniqueId}`
-  const source_platform = sourcePlatform || 'unknown'
+  const { uniqueId, sourcePlatform, serverUrl, project, customFields = { } } = logs.initConfig
+
+  let fieldsData = {}
+  if (customFields && !isObject(customFields)) {
+    const msg = '埋点error:「customFields」必须是一个对象'
+    err(msg)
+    return Promise.reject(msg)
+  } else if (customFields && isObject(customFields)) {
+    fieldsData = {
+      ...extendFields,
+      ...getCustomFields(customFields),
+      ...extendProps
+    }
+  }
+
   const { networkType } = await wxb.getNetworkType()
+  requestId = `${Date.now()}_${uniqueId}`
+
   const {
     brand,
     model,
@@ -55,53 +84,49 @@ export async function requestReportLog(
     deviceId,
     deviceOrientation,
     osName,
-    uniPlatform
+    uniPlatform,
+    windowHeight,
+    windowWidth
   } = logs.systemInfo
   const { route, options, __displayReporter } = activityPage()
   const query = options || __displayReporter?.query || {}
   const pagePath = route || 'unknown'
   const pageQuery = JSON.stringify(query)
-
-  if (!eventType) {
-    return Promise.resolve({})
-  }
-
-  const { windowHeight, windowWidth } = logs.systemInfo
   const libType = formatLibType(uniPlatform, osName)
+  const reportId = eventType === 'page_view' ? getUuid() : uuid()
 
   const baseParams = {
-    id: setUuid(),
-    source_platform,
-    // id,
+    id: reportId,
+    source_platform: sourcePlatform,
     request_id: requestId,
     distinct_id: uniqueId,
     event: eventType,
-    project: 'product_basic',
+    project: optProject || project,
     type: 'track'
   }
   const lib = {
     lib: libType,
     lib_detail: '',
-    lib_method: 'AUTO',
+    lib_method: libMethod || 'AUTO',
     lib_version: 'v2.0.7'
   }
   const { navigationBarTitleText } = getPageInfo(logs.pages, pagePath)
   const { titleText } = getAppCurrPageView()
 
   // 获取用户后续补充的自定义字段
-  const fieldsData = wxb.getStorageSync(customFieldsStorageKey)
-  const supplementFields = isObject(fieldsData) ? fieldsData : {}
+  const fieldData = logs.supplementFields
+  const supplementFields = isObject(fieldData) ? fieldData : {}
+  const pageTitle = navigationBarTitleText || titleText || customTitle
   const properties = {
-    project_account: '',
-    group_account: '',
-    page_title: navigationBarTitleText || titleText,
+    page_title: pageTitle,
     page_id: pagePath,
     page_query: pageQuery,
     referer,
     avail_width: windowWidth,
     avail_height: windowHeight,
-    ...extendFields,
-    ...supplementFields
+    duration_times: 0,
+    ...supplementFields,
+    ...fieldsData
   }
   // 设备信息
   const deviceInfo = {
@@ -122,15 +147,14 @@ export async function requestReportLog(
     properties,
     lib
   }
-
-  console.log('--------> 上报数据:')
-  console.log(JSON.stringify(eventObj))
-  log('上报数据:', baseParams, properties)
+  log('上报数据:', {
+    ...baseParams,
+    properties
+  })
 
   return new Promise((resolve, reject) => {
     logs.request({
-      // url: 'https://www.fastmock.site/mock/6345ad1b8161c2b06ef04f23db6c1b1e/mock/post',
-      url: apiUrls.report,
+      url: `${serverUrl}${apiUrls.report}`,
       method: 'POST',
       header: { isReportRequest: 1 },
       data: { events: [eventObj] },
@@ -141,16 +165,18 @@ export async function requestReportLog(
 }
 
 export const requestHeartBeat = (logs: CollectLogs) => {
+  const { serverUrl } = logs.initConfig
+  const eventIds = getUuid()
   logs.request({
-    url: apiUrls.heartBeat,
+    url: serverUrl + apiUrls.heartBeat,
     method: 'GET',
     header: { isReportRequest: 1 },
     data: {
-      eventIds: getUuid(),
+      eventIds,
       reportType: 1
     },
     success: () => {
-      console.log('心跳上报成功')
+      console.log(`心跳上报成功: ' ${eventIds}`)
     },
     fail: () => {
       console.log('心跳上报失败')

@@ -1,4 +1,7 @@
-import { PageOpts } from '@/types'
+import { err } from './console-log'
+import { isArray, isFunction, isObject } from './data-type'
+import { wxb } from '@/constants'
+import { CustomFields, ExtendFields, PageOpts } from '@/types'
 
 /**
  * 格式化时间
@@ -131,4 +134,34 @@ export const getAppCurrPageView = () => {
   titleNView = webView.getStyle().titleNView
   // #endif
   return titleNView || { titleText: '' }
+}
+
+/**
+ * @description 获取自定义字段
+ * @param customFields
+ * @returns object
+ */
+
+export const getCustomFields = (customFields: CustomFields): ExtendFields => {
+  let extendFields = {}
+  Object.keys(customFields).forEach((key) => {
+    const field = customFields[key]
+    const fieldValue = field['value']
+    if (fieldValue && !isFunction(fieldValue) && !isArray(fieldValue)) {
+      extendFields[key] = fieldValue
+      return
+    }
+    const fieldKey = field['key']
+    if (!fieldKey ) { return }
+
+    const getStoreValue = wxb.getStorageSync(fieldKey)
+    if (isFunction(getStoreValue) && isArray(getStoreValue)) { return }
+    if (isObject(getStoreValue)) {
+      extendFields = { ...extendFields, ...getStoreValue }
+      return
+    }
+    extendFields[key] = getStoreValue
+  })
+  return extendFields
+
 }

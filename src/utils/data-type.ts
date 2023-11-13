@@ -22,6 +22,14 @@ const isUndefined = (undefinedObj: any) => {
   return type(undefinedObj) === 'undefined'
 }
 
+const isString = (str: string) => {
+  return type(str) === 'string'
+}
+
+const isValue = (value: any) => {
+  return value !== null && value !== undefined
+}
+
 /**
  * @description 根据传入的参数，返回对应的类型
  * @param {*} obj
@@ -49,5 +57,7 @@ export {
   isBoolean,
   isNull,
   isUndefined,
+  isString,
+  isValue,
   type
 }
