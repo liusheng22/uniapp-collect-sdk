@@ -80,7 +80,6 @@ export async function requestReportLog(
   const baseParams = {
     id: reportId,
     source_platform: sourcePlatform,
-    // id,
     request_id: requestId,
     distinct_id: uniqueId,
     event: eventType,
@@ -131,13 +130,10 @@ export async function requestReportLog(
     properties,
     lib
   }
-  // log('上报数据:', baseParams, properties)
-  console.log(JSON.stringify({
-    id: baseParams.id,
-    event: baseParams.event,
-    distinct_id: baseParams.distinct_id,
-    ...properties
-  }))
+  log('上报数据:', {
+    ...baseParams,
+    properties
+  })
 
   return new Promise((resolve, reject) => {
     logs.request({

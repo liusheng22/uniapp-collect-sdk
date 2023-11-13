@@ -15,7 +15,7 @@ import { requestHeartBeat, requestReportLog } from './report'
 import { ReportOpts, InitConfig, Success, ResConfig, ExtendFields } from '../types'
 import { customFieldsStorageKey, wxb, defaultConfig } from '@/constants'
 import { deepClone } from '@/utils/clone'
-import { log } from '@/utils/console-log'
+import { err, log } from '@/utils/console-log'
 import { isNull, isObject, isUndefined } from '@/utils/data-type'
 import { validateParams } from '@/utils/validate'
 
@@ -31,9 +31,17 @@ export class CollectLogs {
   public vueApp: any
   public Vue: any
   public mixin: any
+  public isInit = false
+  public static getInstance(Vue: any) {
+    if (!CollectLogs.instance) {
+      CollectLogs.instance = new CollectLogs(Vue)
+    }
+    return CollectLogs.instance
+  }
 
   constructor(Vue: any) {
     if (CollectLogs.instance) {
+      err('CollectLogs实例已存在')
       return CollectLogs.instance
     }
     // 初始化实例
@@ -46,12 +54,16 @@ export class CollectLogs {
     this.Vue = Vue
     this.initConfig = defaultConfig
     this.supplementFields = {}
-
-    // 监听component的methods
-    // proxyComponentsTapEvents(this)
   }
 
   public init(config: InitConfig) {
+    // 是否已经存在
+    if (this.isInit) {
+      const msg = '埋点已经初始化'
+      log(msg)
+      return Promise.reject(msg)
+    }
+    this.isInit = true
     this.pages = uniPages?.pages || []
     this.vueApp = {}
 
@@ -71,15 +83,12 @@ export class CollectLogs {
       isOnTapEvent,
       isOnPageLifecycle
     }, this)
-    // if (isOnTapEvent) { proxyComponentsTapEvents(this) }
     // 截屏事件
     if (isOnCaptureScreen) { onUserCaptureScreen(this) }
     // 内存事件
     if (isTraceMemory) { onMemory(this) }
     // 网络状态
     if (isTraceNetwork) { onNetwork(this) }
-    // 页面生命周期
-    // if (isOnPageLifecycle) { proxyPageEvents(this) }
 
     // 是否页面/应用的开启生命周期监听
     if (isOnAppLifecycle) {
@@ -117,7 +126,7 @@ export class CollectLogs {
     })
   }
 
-  // requestHeartBeat
+  // 上报心跳
   public reportHeartBeat(logs: CollectLogs = this) {
     requestHeartBeat(logs)
   }
@@ -168,6 +177,7 @@ export class CollectLogs {
     }
   }
 
+  // 获取 生命周期的mixin
   public getMixin() {
     const mixins = useMixins()
     this.mixin = mixins(this, true)
