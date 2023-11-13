@@ -12,7 +12,7 @@ import { useMixins } from './mixins'
 import { onApp } from './onApp'
 import { onError } from './onError'
 import { requestHeartBeat, requestReportLog } from './report'
-import { ReportOpts, InitConfig, Success, ResConfig, ExtendFields } from '../types'
+import { ReportOpts, InitConfig, Success, ResConfig, ExtendFields, CustomReportOpts } from '../types'
 import { customFieldsStorageKey, wxb, defaultConfig } from '@/constants'
 import { deepClone } from '@/utils/clone'
 import { err, log } from '@/utils/console-log'
@@ -102,9 +102,9 @@ export class CollectLogs {
   }
 
   // 自定义上报方法
-  public async customReport(opts: { project: string, eventType: string }, properties: ExtendFields = {} ) {
+  public async customReport(opts: CustomReportOpts, properties: ExtendFields = {} ) {
     return new Promise((resolve, reject) => {
-      requestReportLog({ ...opts, libMethod: 'CODE', extendFields: properties }, this )
+      requestReportLog({ ...opts, libMethod: 'CODE', extendProps: properties }, this )
         .then((data: any) => {
           resolve(data)
         })

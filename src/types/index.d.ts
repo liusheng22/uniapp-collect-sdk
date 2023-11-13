@@ -14,13 +14,11 @@ export interface ReportOpts {
   project?: string
   eventType?: string
   libMethod?: string
-
-  // eventType: string
   eventType?: string
   loadOptions?: any
-  // id?: string,
   referer?: string
   extendFields?: ExtendFields
+  extendProps?: ExtendFields
   loadOptions?: any
   customTitle?: string
   requestId?: string
@@ -30,6 +28,11 @@ export interface ReportOpts {
   params?: any
   apiQuery?: string
   isClearLog?: boolean
+}
+
+export interface CustomReportOpts {
+  project: string
+  eventType: string
 }
 
 export interface ResConfig {

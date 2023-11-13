@@ -5,9 +5,9 @@ import { apiUrls } from '@/constants/api'
 import { activityPage, getAppCurrPageView, getPageInfo } from '@/utils'
 import { getCustomFields } from '@/utils'
 import { log, err } from '@/utils/console-log'
-import { isObject } from '@/utils/data-type'
+import { isObject, type } from '@/utils/data-type'
 import { formatLibType } from '@/utils/params'
-import { getUuid, setUuid } from '@/utils/uuid'
+import { getUuid, uuid } from '@/utils/uuid'
 import { validateParams } from '@/utils/validate'
 
 /**
@@ -21,8 +21,16 @@ export async function requestReportLog(
   opts: ReportOpts,
   logs: CollectLogs,
 ): Promise<any> {
-  const { referer, customTitle, eventType = '', libMethod = '', project: optProject } = opts
-  let { requestId = '', extendFields = {} } = opts
+  const {
+    referer,
+    customTitle,
+    eventType = '',
+    libMethod = '',
+    extendFields = {},
+    extendProps = {},
+    project: optProject
+  } = opts
+  let { requestId = '' } = opts
 
   // 校验字段
   const [validate, error] = validateParams(logs.initConfig)
@@ -36,20 +44,30 @@ export async function requestReportLog(
     err(msg)
     return Promise.reject(msg)
   }
+  if (extendProps && !isObject(extendProps)) {
+    const msg = `埋点error:「customReport」方法调用失败，自定义上报的属性不可以是一个${type(extendProps)}`
+    err(msg)
+    return Promise.reject(msg)
+  }
   if (!eventType) {
-    const msg = '埋点error:「eventType」必须是一个字符串'
+    const msg = '埋点error:「eventType」必须是一个字符串或缺少该字段'
     err(msg)
     return Promise.reject(msg)
   }
 
   const { uniqueId, sourcePlatform, serverUrl, project, customFields = { } } = logs.initConfig
 
+  let fieldsData = {}
   if (customFields && !isObject(customFields)) {
     const msg = '埋点error:「customFields」必须是一个对象'
     err(msg)
     return Promise.reject(msg)
   } else if (customFields && isObject(customFields)) {
-    extendFields = { ...extendFields, ...getCustomFields(customFields) }
+    fieldsData = {
+      ...extendFields,
+      ...getCustomFields(customFields),
+      ...extendProps
+    }
   }
 
   const { networkType } = await wxb.getNetworkType()
@@ -75,7 +93,7 @@ export async function requestReportLog(
   const pagePath = route || 'unknown'
   const pageQuery = JSON.stringify(query)
   const libType = formatLibType(uniPlatform, osName)
-  const reportId = eventType === 'page_view' ? getUuid() : ''
+  const reportId = eventType === 'page_view' ? getUuid() : uuid()
 
   const baseParams = {
     id: reportId,
@@ -100,16 +118,15 @@ export async function requestReportLog(
   const supplementFields = isObject(fieldData) ? fieldData : {}
   const pageTitle = navigationBarTitleText || titleText || customTitle
   const properties = {
-    project_account: '',
-    group_account: '',
     page_title: pageTitle,
     page_id: pagePath,
     page_query: pageQuery,
     referer,
     avail_width: windowWidth,
     avail_height: windowHeight,
-    ...extendFields,
-    ...supplementFields
+    duration_times: 0,
+    ...supplementFields,
+    ...fieldsData
   }
   // 设备信息
   const deviceInfo = {
