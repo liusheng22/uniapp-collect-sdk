@@ -25,7 +25,7 @@ export const validateParams = (props: InitConfig): [boolean, string] => {
   if (!isString(project)) {
     return [false, '「project」必须是字符串']
   }
-  
+
   if (!isString(sourcePlatform)) {
     return [false, '「sourcePlatform」必须是字符串']
   }
@@ -67,8 +67,8 @@ export const validateKeywords = (props: object, keywords: Array<string>): [boole
   }
   const unvalidate = []
   const propsKeys = Object.keys(props)
-  
-  keywords.map(item => {
+
+  keywords.forEach(item => {
     if (!propsKeys.includes(item)) {
       unvalidate.push(item)
     }
