@@ -1,12 +1,13 @@
 <script>
-import { collectLogs } from './pages/test/logs'
-
 export default {
   globalData: {
-    collectLogs
   },
   onLaunch: function() {
     // console.log('----- App Launch -----')
+    // console.log('---launch aa ->', getApp().globalData.aa)
+    // console.log('---launch aa ->', this.globalData.aa)
+    // console.log('---this.$scope---')
+    // console.log(this.$scope.globalData)
   },
   onShow: function() {
     // console.log('----- App Show -----')

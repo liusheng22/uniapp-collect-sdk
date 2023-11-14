@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import App from './App'
-// import customButton from './pages/components/custom-button.vue'
-// import testComponent from './components/test-component/test-component.vue'
 import { collectLogs } from './pages/test/logs'
 
 import './uni.promisify.adaptor'
@@ -10,17 +8,6 @@ Vue.config.productionTip = false
 
 App.mpType = 'app'
 
-// 注册全局组件
-// Vue.component('test-component', testComponent)
-// Vue.component('custom-button', customButton)
-
-Vue.prototype.$collectLogs = collectLogs
-// eslint-disable-next-line
-uni.$on('collectLogs', (data) => {
-  collectLogs.reportLog({
-    ...data
-  })
-})
 collectLogs.init({
   sourcePlatform: 'test-platform',
   uniqueId: 'test123',
@@ -51,12 +38,8 @@ collectLogs.init({
   },
 
   isShowLog: true,
-  isOnAppLifecycle: false,
   isOnPageLifecycle: true,
-  isTraceNetwork: false,
-  isTraceMemory: false,
-  isOnTapEvent: true,
-  isOnCaptureScreen: false
+  isOnTapEvent: false
 })
 
 // collectLogs.customReport({

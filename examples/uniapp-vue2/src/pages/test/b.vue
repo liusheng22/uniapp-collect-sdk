@@ -3,7 +3,6 @@
     <div class="center">b page</div>
     <button @tap="link('/pages/test/a')">to a page</button>
     <view class="button-default" @tap="link('/pages/test/c')">to c page</view>
-    <!-- <mixin-component /> -->
 
     <button>btn111</button>
   </view>

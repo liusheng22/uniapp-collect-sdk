@@ -1,7 +1,6 @@
 <template>
   <view>
     <div class="center">a nvue page</div>
-    <!-- <mixin-component /> -->
     <button @tap="link('/pages/test/b')">to b page</button>
     <button @tap="link('/pages/test/b-nvue')">to b nvue page</button>
     <view class="button-default" @tap="link('/pages/test/c-nvue')">to c nvue page</view>
@@ -11,9 +10,8 @@
 </template>
 
 <script>
-import { collectLogs, useGlobalApp } from './logs'
-const globalApp = useGlobalApp()
-const logsMixin = globalApp()
+import { collectLogs } from './logs'
+const logsMixin = collectLogs.lifecycleMixin()
 export default {
   mixins: [logsMixin],
   onShareAppMessage() {
@@ -22,6 +20,13 @@ export default {
     }
   },
   onShow() {
+    const app = getApp({ allowDefault: true })
+    console.log('---this.$scope---')
+    console.log(this.$scope.globalData)
+    // console.log(JSON.stringify(app.globalData))
+
+    // console.log('---a-page aa ->', getApp().globalData)
+
     // uni.showModal({
     //   title: 'nvue onShow',
     //   content: '',

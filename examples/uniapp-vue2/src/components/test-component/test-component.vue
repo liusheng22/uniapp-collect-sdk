@@ -22,16 +22,15 @@
 </script>
 
 <script module="collectLogs" lang="renderjs">
-const isBoolean = (bool) => {
-  return Object.prototype.toString.call(bool) === '[object Boolean]'
-}
-
 export default {
   mounted() {
     // 监听全局点击事件
     document.addEventListener('click', this.clickHandler)
   },
   methods: {
+    isBoolean(bool) {
+      return Object.prototype.toString.call(bool) === '[object Boolean]'
+    },
     clickHandler(e) {
       const { target, touches, pageX, pageY } = e
       const tapsInfo = {}
@@ -50,8 +49,8 @@ export default {
       }
 
       const { logs, type } = dataset
-      tapsInfo.tapType = isBoolean(type) ? '' : type
-      tapsInfo.tapText = isBoolean(logs) ? '' : logs
+      tapsInfo.tapType = this.isBoolean(type) ? '' : type
+      tapsInfo.tapText = this.isBoolean(logs) ? '' : logs
       tapsInfo.tapText = tapsInfo.tapText || elInnerText
       // console.log('logs, type ->', logs, type)
 

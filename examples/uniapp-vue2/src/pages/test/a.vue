@@ -4,6 +4,7 @@
     <button @tap="link('/pages/test/b')">to b page</button>
     <view class="button-default" @tap="link('/pages/test/c')">to c page</view>
     <button @tap="link('/pages/test/a-nvue')">to nvue a page</button>
+    <button @tap="link('/pages/test/b-nvue')">to nvue b page</button>
 
     <!-- <button  data-logs="errorInfo" data-type="errorType" @tap="noop" style="margin:30rpx 0;">点击测试</button>
     <div data-logs="errorInfo" data-type="errorType" @tap="noop" style="margin:30rpx 0;">点击测试</div>
@@ -77,9 +78,9 @@ export default {
     testClick() {
       this.num++
       console.log('testClick')
-      // this.$collectLogs.reportLog({
-      //   eventType: 'test-click'
-      // })
+      this.$collectLogs.customReport({
+        eventType: 'test-click'
+      })
 
       // collectLogs.updateCustomFields({
       //   a: 1,

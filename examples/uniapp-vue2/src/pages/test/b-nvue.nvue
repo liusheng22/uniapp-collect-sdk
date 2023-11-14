@@ -7,9 +7,8 @@
 </template>
 
 <script>
-import { useGlobalApp } from './logs'
-const globalApp = useGlobalApp()
-const logsMixin = globalApp()
+import { collectLogs } from './logs'
+const logsMixin = collectLogs.lifecycleMixin()
 export default {
   mixins: [logsMixin],
   // 数据状态
