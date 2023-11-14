@@ -1,5 +1,5 @@
 import { requestHeartBeat, requestReportLog } from './report'
-import { activityPage, debounce, sleep } from '@/utils'
+import { activityPage, debounce } from '@/utils'
 
 export const useMixins = () => {
   let previousPage = activityPage().route

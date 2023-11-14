@@ -8,6 +8,7 @@ declare let getApp: any
 declare let Component: any
 declare let Page: any
 declare let App: any
+declare let globalData: any
 declare let getCurrentPages: any
 interface Options {
   [key: string]: any

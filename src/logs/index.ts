@@ -31,7 +31,6 @@ export class CollectLogs {
   public vueApp: any
   public Vue: any
   public uuid: string
-  public mixin: any
   public isInit = false
   public static getInstance(Vue: any) {
     if (!CollectLogs.instance) {
@@ -56,6 +55,8 @@ export class CollectLogs {
     this.uuid = ''
     this.initConfig = defaultConfig
     this.supplementFields = {}
+
+    Vue.prototype.$collectLogs = this
   }
 
   public init(config: InitConfig) {
@@ -80,6 +81,7 @@ export class CollectLogs {
     }
     const { isOnTapEvent, isOnPageLifecycle, isOnCaptureScreen, isTraceMemory, isOnAppLifecycle, isTraceNetwork } = this.initConfig
 
+    this.listenerNvueLifecycle()
     // 点击事件/路由事件
     proxyComponentsEvents({
       isOnTapEvent,
@@ -117,6 +119,11 @@ export class CollectLogs {
   }
 
   public async reportLog(obj: ReportOpts, logs: CollectLogs = this) {
+    const { eventType } = obj || {}
+    const { isOnTapEvent } = logs.initConfig || {}
+    if (eventType === 'button_click' && !isOnTapEvent) {
+      return
+    }
     return new Promise((resolve, reject) => {
       requestReportLog(obj, logs)
         .then((data: any) => {
@@ -131,6 +138,30 @@ export class CollectLogs {
   // 上报心跳
   public reportHeartBeat(logs: CollectLogs = this) {
     requestHeartBeat(logs)
+  }
+
+  public lifecycleMixin() {
+    const appCollectLogs = getApp().globalData.collectLogs || this
+    const mixins = useMixins()
+    const logsMixin = mixins(appCollectLogs, true)
+    return logsMixin
+  }
+
+  public listenerNvueLifecycle() {
+    uni.$on('collectLogs', (data: any) => {
+      const nvueCollectLogs = getApp().globalData.collectLogs || this
+      switch (data.lifecycle) {
+        case 'onShow':
+          nvueCollectLogs.reportLog({
+            ...data
+          })
+          break
+        case 'onHide':
+        case 'onUnload':
+          nvueCollectLogs.reportHeartBeat()
+          break
+      }
+    })
   }
 
   /**
@@ -177,12 +208,5 @@ export class CollectLogs {
         apiQuery: reqQuery
       })
     }
-  }
-
-  // 获取 生命周期的mixin
-  public getMixin() {
-    const mixins = useMixins()
-    this.mixin = mixins(this, true)
-    return this.mixin
   }
 }

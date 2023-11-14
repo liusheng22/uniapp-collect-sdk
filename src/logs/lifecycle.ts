@@ -2,12 +2,13 @@ import { useMixins } from './mixins'
 import { requestHeartBeat, requestReportLog } from './report'
 import { CollectLogs } from './index'
 import { MpHook } from '@/types'
-import { activityPage, debounce, sleep } from '@/utils'
+import { activityPage, sleep } from '@/utils'
 import { isObject, isBoolean } from '@/utils/data-type'
 
 export function proxyComponentsEvents(config: any, logs: CollectLogs) {
   const { isOnTapEvent, isOnPageLifecycle } = config
-  createVueLifecycle(isOnPageLifecycle, logs)
+  createVueLifecycle(logs)
+
   const oldComponent = Component
   Component = function (componentOptions: any, ...arg: any[]) {
     isOnTapEvent && proxyComponentsTapEvents(componentOptions, arg, logs)
@@ -18,7 +19,9 @@ export function proxyComponentsEvents(config: any, logs: CollectLogs) {
   }
 }
 
-function createVueLifecycle(isOnPageLifecycle: boolean, logs: CollectLogs) {
+// 创建Vue的生命周期
+function createVueLifecycle(logs: CollectLogs) {
+  setGlobalData(logs)
   previousPage = activityPage().route
   const mixins = useMixins()
   const mixin = mixins(logs)
@@ -27,6 +30,18 @@ function createVueLifecycle(isOnPageLifecycle: boolean, logs: CollectLogs) {
   })
 }
 
+// 设置APP的globalData全局变量
+async function setGlobalData(logs: CollectLogs) {
+  await sleep(100)
+  const app = getApp({ allowDefault: true })
+  if (!app) {
+    return await setGlobalData(logs)
+  } else {
+    app.globalData.collectLogs = logs
+  }
+}
+
+// 代理组件的点击事件
 function proxyComponentsTapEvents(componentOptions: any, arg: any, logs: CollectLogs) {
   const methods = getMethods(componentOptions.methods)
   if (methods) {
@@ -36,22 +51,9 @@ function proxyComponentsTapEvents(componentOptions: any, arg: any, logs: Collect
   }
 }
 
+// 代理组件的生命周期
 let previousPage = ''
 function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: CollectLogs) {
-  // const oldLoad = componentOptions.methods.onLoad
-  // if (oldLoad) {
-  //   componentOptions.methods['onLoad'] = function (args: any) {
-  //     console.log('onLoad====>', activityPage().route, args)
-  //     // logs.reportLog({
-  //     //   eventType: 'page_view',
-  //     //   errorInfo: activityPage().route,
-  //     //   loadOptions: activityPage().options
-  //     // })
-  //     // isNewLoad = false
-  //     oldLoad.apply(this, arg)
-  //   }
-  // }
-
   const oldShow = componentOptions.methods.onShow
   if (oldShow) {
     componentOptions.methods['onShow'] = async function () {
@@ -90,6 +92,7 @@ function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: C
   }
 }
 
+// 代理Page的点击事件
 export function proxyPageEvents(logs: CollectLogs) {
   const oldPage = Page
   Page = function (pageOptions) {
@@ -103,7 +106,7 @@ export function proxyPageEvents(logs: CollectLogs) {
   }
 }
 
-// 事件代理
+// 点击事件代理
 export function clickProxy(options: any, method: any, logs: CollectLogs) {
   const isClick = (eventType: any) => {
     return !!{
@@ -137,13 +140,10 @@ export function clickProxy(options: any, method: any, logs: CollectLogs) {
       extendFields = {
         abscissa: x,
         ordinate: y,
-        // avail_width: windowWidth,
-        // avail_height: windowHeight,
         button_title: tapsInfo.tapText
       }
     }
     const { tapType, tapText } = tapsInfo
-    // console.log(tapsInfo)
 
     return (
       eventType
