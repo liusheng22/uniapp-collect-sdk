@@ -8,10 +8,10 @@ module.exports = {
           test: /\.vue$/,
           use: {
             // loader: 'vue-inset-loader'
-            // loader: path.resolve(__dirname, '../node_modules/vue-inset-loader'),
             loader: path.resolve(__dirname, '../node_modules/wxb-uniapp-inset-loader/src/index.js'),
             options: {
-              VUE_APP_PLATFORMS: ['app-plus']
+              VUE_APP_PLATFORMS: ['app-plus'],
+              wxbCollectLogs: true
             }
           }
         }

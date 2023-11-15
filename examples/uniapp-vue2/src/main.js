@@ -38,8 +38,8 @@ collectLogs.init({
   },
 
   isShowLog: true,
-  isOnPageLifecycle: true,
-  isOnTapEvent: false
+  isOnPageLifecycle: false,
+  isOnTapEvent: true
 })
 
 // collectLogs.customReport({

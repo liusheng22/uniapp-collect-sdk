@@ -78,9 +78,9 @@ export default {
     testClick() {
       this.num++
       console.log('testClick')
-      this.$collectLogs.customReport({
-        eventType: 'test-click'
-      })
+      // this.$collectLogs.customReport({
+      //   eventType: 'test-click'
+      // })
 
       // collectLogs.updateCustomFields({
       //   a: 1,

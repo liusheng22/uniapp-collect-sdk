@@ -4,7 +4,7 @@
       :randomNum="randomNum"
       :change:randomNum="collectLogs.randomNumChange"
     ></view> -->
-    test11111
+    test111112222
   </view>
 </template>
 
@@ -32,6 +32,7 @@ export default {
       return Object.prototype.toString.call(bool) === '[object Boolean]'
     },
     clickHandler(e) {
+      console.log("🚀 ~ file: test-component.vue:35 ~ clickHandler ~ e:", e)
       const { target, touches, pageX, pageY } = e
       const tapsInfo = {}
       let elInnerText = ''
