@@ -31,7 +31,6 @@ export async function requestReportLog(
     project: optProject
   } = opts
   let { requestId = '' } = opts
-
   // 校验字段
   const [validate, error] = validateParams(logs.initConfig)
   if (!validate) {
@@ -98,7 +97,6 @@ export async function requestReportLog(
 
   const baseParams = {
     id: reportId,
-    source_platform: sourcePlatform,
     request_id: requestId,
     distinct_id: uniqueId,
     event: eventType,
@@ -119,6 +117,7 @@ export async function requestReportLog(
   const supplementFields = isObject(fieldData) ? fieldData : {}
   const pageTitle = navigationBarTitleText || titleText || customTitle
   const properties = {
+    source_platform: sourcePlatform,
     page_title: pageTitle,
     page_id: pagePath,
     page_query: pageQuery,

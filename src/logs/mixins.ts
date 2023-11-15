@@ -13,6 +13,9 @@ export const useMixins = () => {
 
     return {
       methods: {
+        reportClick(params: any) {
+          this.$collectLogs.customReport(params)
+        },
         nvueLoad(customTitle: string) {
           uni.$emit('collectLogs', {
             lifecycle: 'onShow',
