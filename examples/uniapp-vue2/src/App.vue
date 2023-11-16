@@ -36,7 +36,6 @@ export default {
   /* margin: 0 10px; */
   width: 600rpx;
   padding: 0 15px;
-  border-radius: 4px;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;

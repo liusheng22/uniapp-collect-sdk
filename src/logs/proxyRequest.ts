@@ -2,9 +2,6 @@ import { CollectLogs } from './index'
 import { wxb } from '@/constants'
 
 export function proxyRequest(logs: CollectLogs) {
-  // Object.defineProperty(wx, 'request', {
-  // Object.defineProperty(wxb, 'request', {
-  // Object.defineProperty(uni, 'request', {
   Object.defineProperty(logs, 'request', {
     configurable: true,
     enumerable: true,
@@ -39,10 +36,7 @@ export function proxyRequest(logs: CollectLogs) {
         return originFail.apply(this, failArgs)
       }
 
-      // return logs.request
-
       // return logs.request.apply(this, arg)
-      // return logs.request.call(this, arg)
     }
   })
 }

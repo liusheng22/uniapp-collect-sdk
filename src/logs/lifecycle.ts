@@ -60,12 +60,10 @@ function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: C
   if (oldShow) {
     componentOptions.methods['onShow'] = async function () {
       // await sleep(300)
-      console.log('onShow====>', activityPage().route)
       await requestReportLog({
         referer: previousPage,
         eventType: 'page_view'
       }, logs)
-      // previousPage = activityPage().route
 
       oldShow.apply(this, arg)
     }
@@ -74,7 +72,6 @@ function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: C
   const oldHide = componentOptions.methods.onHide
   if (oldHide) {
     componentOptions.methods['onHide'] = function () {
-      console.log('onHide====>', activityPage().route)
       previousPage = activityPage().route
       requestHeartBeat(logs)
 
@@ -85,7 +82,6 @@ function proxyComponentsLifecycleEvents(componentOptions: any, arg: any, logs: C
   const oldUnload = componentOptions.methods.onUnload
   if (oldUnload) {
     componentOptions.methods['onUnload'] = function () {
-      console.log('onUnload====>', activityPage().route)
       previousPage = activityPage().route
       requestHeartBeat(logs)
 
