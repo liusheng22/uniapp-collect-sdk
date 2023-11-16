@@ -38,7 +38,7 @@ collectLogs.init({
   },
 
   isShowLog: true,
-  isOnPageLifecycle: false,
+  isOnPageLifecycle: true,
   isOnTapEvent: true
 })
 

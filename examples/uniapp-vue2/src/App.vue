@@ -1,7 +1,5 @@
 <script>
 export default {
-  globalData: {
-  },
   onLaunch: function() {
     // console.log('----- App Launch -----')
     // console.log('---launch aa ->', getApp().globalData.aa)
@@ -36,8 +34,9 @@ export default {
   height: 40px;
   line-height: 40px;
   /* margin: 0 10px; */
-  width: 90%;
+  width: 600rpx;
   padding: 0 15px;
+  border-radius: 4px;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;

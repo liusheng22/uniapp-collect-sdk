@@ -1,11 +1,11 @@
 <template>
   <view>
-    <div class="center">a nvue page</div>
-    <button @tap="link('/pages/test/b')">to b page</button>
-    <button @tap="link('/pages/test/b-nvue')">to b nvue page</button>
-    <view class="button-default" @tap="link('/pages/test/c-nvue')">to c nvue page</view>
-
-    <view style="margin: 30px 0;width: 100%;height: 100px;border: 1px solid #000;" @tap="clickReport">clickReport</view>
+    <navigate-to url="/pages/test/a"></navigate-to>
+    <navigate-to url="/pages/test/b"></navigate-to>
+    <navigate-to url="/pages/test/c"></navigate-to>
+    <navigate-to url="/pages/test/a-nvue"></navigate-to>
+    <navigate-to url="/pages/test/b-nvue"></navigate-to>
+    <navigate-to url="/pages/test/c-nvue"></navigate-to>
   </view>
 </template>
 
@@ -17,42 +17,6 @@ export default {
   onShareAppMessage() {
     return {
       title: 'a 页面',
-    }
-  },
-  onShow() {
-    const app = getApp({ allowDefault: true })
-    console.log('---this.$scope---')
-    console.log(this.$scope.globalData)
-    // console.log(JSON.stringify(app.globalData))
-
-    // console.log('---a-page aa ->', getApp().globalData)
-
-    // uni.showModal({
-    //   title: 'nvue onShow',
-    //   content: '',
-    //   showCancel: true
-    // })
-  },
-  // 方法
-  methods: {
-    link(url) {
-      uni.navigateTo({
-        url: `${url}?b=2`,
-      })
-    },
-    noop() {
-      // console.log('noop')
-    },
-    clickReport() {
-      // collectLogs.customReport({}, {
-        //   test111: '000000000000000000'
-        // })
-
-      // console.log('------logs----->>>', collectLogs.initConfig)
-
-      console.log('==========触发===========')
-      uni.$emit('logs')
-      // uni.$emit('test')
     }
   }
 }

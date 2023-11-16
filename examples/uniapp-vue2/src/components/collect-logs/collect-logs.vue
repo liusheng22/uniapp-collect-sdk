@@ -1,10 +1,6 @@
 <template>
   <view class="center">
-    <!-- <view
-      :randomNum="randomNum"
-      :change:randomNum="collectLogs.randomNumChange"
-    ></view> -->
-    test111112222
+    collect-logs components
   </view>
 </template>
 

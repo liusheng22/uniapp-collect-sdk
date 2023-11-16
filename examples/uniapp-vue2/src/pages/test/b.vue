@@ -1,54 +1,16 @@
 <template>
   <view>
-    <div class="center">b page</div>
-    <button @tap="link('/pages/test/a')">to a page</button>
-    <view class="button-default" @tap="link('/pages/test/c')">to c page</view>
-
-    <button>btn111</button>
+    <navigate-to url="/pages/test/a"></navigate-to>
+    <navigate-to url="/pages/test/b"></navigate-to>
+    <navigate-to url="/pages/test/c"></navigate-to>
+    <navigate-to url="/pages/test/a-nvue"></navigate-to>
+    <navigate-to url="/pages/test/b-nvue"></navigate-to>
+    <navigate-to url="/pages/test/c-nvue"></navigate-to>
   </view>
 </template>
 
 <script>
 export default {
-  // 数据状态
-  data() {
-    return {}
-  },
-  created() {console.log('-----b------')
-    console.log('b 页面的 created')
-  },
-  // onLoad(options) {
-  //   // console.log('bbb', this.appid)
-  // },
-  // 分享
-  onShareAppMessage() {
-    return {
-      title: 'b 页面',
-    }
-  },
-  // 方法
-  methods:{
-    link(url) {
-      uni.navigateTo({
-        // url
-        url: `${url}?c=3`,
-      })
-    },
-    test() {}
-  }
-}
-</script>
-
-<script module="testLogs" lang="renderjs">
-export default {
-  mounted  ()    {
-    console.log('-----test logs-----')
-  },
-  methods:    {
-    test123() {
-      console.log('test123')
-    }
-  }
 }
 </script>
 
