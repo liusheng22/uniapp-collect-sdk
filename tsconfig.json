@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "types": [],
+    "types": [
+      "@dcloudio/types",
+      "@types/wechat-miniprogram",
+      "@types/uni-app"
+    ],
     "baseUrl": ".",
     "paths": {
       "@/*": [

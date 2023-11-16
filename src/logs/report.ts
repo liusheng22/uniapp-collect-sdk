@@ -1,12 +1,12 @@
 import { ReportOpts } from '../types'
 import { CollectLogs } from '.'
-import { wxb } from '@/constants'
 import { apiUrls } from '@/constants/api'
 import { activityPage, getAppCurrPageView, getPageInfo, sleep } from '@/utils'
 import { getCustomFields } from '@/utils'
 import { log, err } from '@/utils/console-log'
 import { isObject, type } from '@/utils/data-type'
 import { formatLibType } from '@/utils/params'
+import { getNetworkType } from '@/utils/uni-api'
 import { getUuid, setUuid, uuid } from '@/utils/uuid'
 import { validateParams } from '@/utils/validate'
 
@@ -69,7 +69,7 @@ export async function requestReportLog(
     }
   }
 
-  const { networkType } = await wxb.getNetworkType()
+  const networkType = getNetworkType()
   requestId = `${Date.now()}_${uniqueId}`
 
   const {
@@ -147,6 +147,7 @@ export async function requestReportLog(
     properties,
     lib
   }
+
   log('上报数据:', {
     ...baseParams,
     properties

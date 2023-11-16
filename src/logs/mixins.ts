@@ -1,4 +1,6 @@
 import { requestHeartBeat, requestReportLog } from './report'
+import { CollectLogs } from '.'
+import { wxb } from '@/constants'
 import { activityPage, debounce } from '@/utils'
 
 export const useMixins = () => {
@@ -8,7 +10,7 @@ export const useMixins = () => {
   isIos = (plus.os.name === 'iOS')
   // #endif
 
-  const mixin = (logs: any, isNvue = false) => {
+  const mixin = (logs: CollectLogs, isNvue = false) => {
     const { isOnPageLifecycle } = logs.initConfig
 
     return {
@@ -17,7 +19,7 @@ export const useMixins = () => {
           this.$collectLogs.customReport(params)
         },
         nvueLoad(customTitle: string) {
-          uni.$emit('collectLogs', {
+          wxb.$emit('collectLogs', {
             lifecycle: 'onShow',
             customTitle,
             referer: previousPage,
@@ -25,7 +27,7 @@ export const useMixins = () => {
           })
         },
         nvueUnload(lifecycle: string) {
-          uni.$emit('collectLogs', {
+          wxb.$emit('collectLogs', {
             lifecycle
           })
         }

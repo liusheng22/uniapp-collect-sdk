@@ -12,7 +12,7 @@ import { useMixins } from './mixins'
 import { onApp } from './onApp'
 import { onError } from './onError'
 import { requestHeartBeat, requestReportLog } from './report'
-import { ReportOpts, InitConfig, Success, ResConfig, ExtendFields, CustomReportOpts } from '../types'
+import { ReportOpts, InitConfig, Success, ResConfig, ExtendFields, CustomReportOpts, UniSystemInfoResult, keyValue } from '../types'
 import { customFieldsStorageKey, wxb, defaultConfig } from '@/constants'
 import { deepClone } from '@/utils/clone'
 import { err, log } from '@/utils/console-log'
@@ -22,24 +22,18 @@ import { validateParams } from '@/utils/validate'
 export class CollectLogs {
   private static instance: CollectLogs | null = null
 
-  public request: any
+  public request = wxb.request
   public pages: any
   public logList: Array<ReportOpts>
-  public systemInfo: any
+  public systemInfo: GetSystemInfoResult & UniSystemInfoResult
   public initConfig: InitConfig
-  public supplementFields: any
+  public supplementFields: keyValue
   public vueApp: any
-  public Vue: any
+  public vue: Vue.VueConstructor
   public uuid: string
   public isInit = false
-  public static getInstance(Vue: any) {
-    if (!CollectLogs.instance) {
-      CollectLogs.instance = new CollectLogs(Vue)
-    }
-    return CollectLogs.instance
-  }
 
-  constructor(Vue: any) {
+  constructor(vue: Vue.VueConstructor) {
     if (CollectLogs.instance) {
       err('CollectLogs实例已存在')
       return CollectLogs.instance
@@ -47,16 +41,14 @@ export class CollectLogs {
     // 初始化实例
     CollectLogs.instance = this
 
-    this.request = wxb.request
     this.logList = []
     this.pages = {}
     this.systemInfo = wxb.getSystemInfoSync()
-    this.Vue = Vue
+    this.vue = vue
     this.uuid = ''
     this.initConfig = defaultConfig
     this.supplementFields = {}
-
-    Vue.prototype.$collectLogs = this
+    vue.prototype.$collectLogs = this
   }
 
   public init(config: InitConfig) {
@@ -148,7 +140,7 @@ export class CollectLogs {
   }
 
   public listenerNvueLifecycle() {
-    uni.$on('collectLogs', (data: any) => {
+    wxb.$on('collectLogs', (data: any) => {
       const nvueCollectLogs = getApp().globalData.collectLogs || this
       switch (data.lifecycle) {
         case 'onShow':

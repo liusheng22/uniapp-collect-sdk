@@ -1,3 +1,17 @@
+export interface Options {
+  [key: string]: any
+}
+
+export interface keyValue {
+  [key: string | number]: any
+}
+
+export interface UniSystemInfoResult {
+  deviceId?: string
+  deviceOrientation?: string
+  osName?: string
+  uniPlatform?: string
+}
 
 export interface Success {
   statusCode: number

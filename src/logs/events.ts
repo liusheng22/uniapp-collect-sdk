@@ -22,7 +22,7 @@ export function onUserCaptureScreen(logs: CollectLogs) {
 export function onMemory(logs: CollectLogs) {
   // 判断某个API是否可用
   if (!canIUse('onMemoryWarning')) { return }
-  wxb.onMemoryWarning((error: any) => {
+  wxb.onMemoryWarning((error) => {
     console.log('errorInfo:', error)
     const memoryLevel = {
       0: '无等级',
@@ -105,7 +105,7 @@ export function onNetwork(logs: CollectLogs) {
     }
   }
   wxb.getNetworkType({
-    success: (net: any) => {
+    success: (net) => {
       const { networkType } = net
       reportNetwork({
         networkType,
@@ -114,7 +114,7 @@ export function onNetwork(logs: CollectLogs) {
       })
     }
   })
-  wxb.onNetworkStatusChange((net: any) => {
+  wxb.onNetworkStatusChange((net) => {
     const { isConnected, networkType } = net
     reportNetwork({
       isConnected,

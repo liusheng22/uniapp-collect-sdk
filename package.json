@@ -19,8 +19,7 @@
     "bin"
   ],
   "scripts": {
-    "dev": "ttsc -w",
-    "dev:watch": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
+    "dev": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "build": "tsc && tsc-alias && npm run cp-types",
     "release": "tsc && npm publish",
     "cp-types": "copyfiles src/types/* bin",
@@ -32,6 +31,8 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
+    "@dcloudio/types": "^3.4.3",
+    "@types/uni-app": "^1.4.7",
     "@types/wechat-miniprogram": "^3.1.0",
     "concurrently": "^8.2.2",
     "copyfiles": "^2.4.1",

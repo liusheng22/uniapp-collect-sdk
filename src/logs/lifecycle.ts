@@ -4,14 +4,16 @@ import { CollectLogs } from './index'
 import { MpHook } from '@/types'
 import { activityPage, sleep } from '@/utils'
 import { isObject, isBoolean } from '@/utils/data-type'
-
 export function proxyComponentsEvents(config: any, logs: CollectLogs) {
   const { isOnTapEvent, isOnPageLifecycle } = config
   createVueLifecycle(logs)
 
   const oldComponent = Component
-  Component = function (componentOptions: any, ...arg: any[]) {
-    isOnTapEvent && proxyComponentsTapEvents(componentOptions, arg, logs)
+  Component = function (
+    componentOptions: Record<string, string | undefined>,
+    ...arg: any[]
+  ) {
+    isOnTapEvent && proxyComponentsTapEvents(componentOptions, logs)
 
     isOnPageLifecycle && proxyComponentsLifecycleEvents(componentOptions, arg, logs)
 
@@ -25,7 +27,7 @@ function createVueLifecycle(logs: CollectLogs) {
   previousPage = activityPage().route
   const mixins = useMixins()
   const mixin = mixins(logs)
-  logs.Vue.mixin({
+  logs.vue.mixin({
     mixins: [mixin]
   })
 }
@@ -42,7 +44,7 @@ async function setGlobalData(logs: CollectLogs) {
 }
 
 // 代理组件的点击事件
-function proxyComponentsTapEvents(componentOptions: any, arg: any, logs: CollectLogs) {
+function proxyComponentsTapEvents(componentOptions: any, logs: CollectLogs) {
   const methods = getMethods(componentOptions.methods)
   if (methods) {
     methods.forEach((methodName) => {

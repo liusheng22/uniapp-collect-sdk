@@ -1,6 +1,6 @@
 import { InitConfig } from '@/types'
 
-export const wxb = uni || wx || tt
+export const wxb: Uni = uni || wx || tt
 
 // 默认参数
 export const defaultConfig: InitConfig = {

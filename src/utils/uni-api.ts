@@ -4,3 +4,13 @@ import { wxb } from '@/constants'
 export const canIUse = (apiName: string) => {
   return wxb.canIUse(apiName)
 }
+
+export const getNetworkType = () => {
+  let type = ''
+  wxb.getNetworkType({
+    success: (result) => {
+      type = result.networkType
+    }
+  })
+  return type
+}

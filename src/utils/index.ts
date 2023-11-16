@@ -125,7 +125,7 @@ export const getPageInfo = (pages: any, pagePath: string) => {
 }
 
 export const getAppCurrPageView = () => {
-  let titleNView = { titleText: '' }
+  let titleNView: PlusWebviewWebviewTitleNViewStyles = {}
   // #ifdef APP-PLUS
   const pages = getCurrentPages() || []
   const page = pages[pages.length - 1]
@@ -133,7 +133,7 @@ export const getAppCurrPageView = () => {
   const webView = page.$getAppWebview()
   titleNView = webView.getStyle().titleNView
   // #endif
-  return titleNView || { titleText: '' }
+  return titleNView
 }
 
 /**
