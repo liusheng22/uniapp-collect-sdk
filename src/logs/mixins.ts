@@ -66,9 +66,7 @@ export const useMixins = () => {
         if (!isOnPageLifecycle) { return }
         previousPage = activityPage().route
         if (isNvue && isIos) {
-          return this.nvueUnload({
-            lifecycle: 'onHide'
-          })
+          return this.nvueUnload('onHide')
         }
         requestHeartBeat(logs)
         // #endif
@@ -78,9 +76,7 @@ export const useMixins = () => {
         if (!isOnPageLifecycle) { return }
         previousPage = activityPage().route
         if (isNvue && isIos) {
-          return this.nvueUnload({
-            lifecycle: 'onUnload'
-          })
+          return this.nvueUnload('onUnload')
         }
         requestHeartBeat(logs)
         // #endif

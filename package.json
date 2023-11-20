@@ -1,6 +1,6 @@
 {
   "name": "wxb-uniapp-collect-sdk",
-  "version": "v0.1.0",
+  "version": "0.1.1",
   "description": "用于uniapp项目埋点",
   "author": "刘胜",
   "license": "ISC",
