@@ -177,10 +177,10 @@ export const requestHeartBeat = (logs: CollectLogs) => {
       reportType: 1
     },
     success: () => {
-      console.log(`心跳上报成功: ${eventIds}`)
+      log(`心跳上报成功: ${eventIds}`)
     },
     fail: () => {
-      console.log('心跳上报失败')
+      log('心跳上报失败')
     }
   })
 }

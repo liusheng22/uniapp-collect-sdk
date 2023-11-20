@@ -1,7 +1,7 @@
 import { requestHeartBeat, requestReportLog } from './report'
 import { CollectLogs } from '.'
 import { wxb } from '@/constants'
-import { activityPage, debounce } from '@/utils'
+import { activityPage, debounce, sleep } from '@/utils'
 
 export const useMixins = () => {
   let previousPage = activityPage().route
@@ -10,13 +10,26 @@ export const useMixins = () => {
   isIos = (plus.os.name === 'iOS')
   // #endif
 
-  const mixin = (logs: CollectLogs, isNvue = false) => {
+  const mixin = (logs: CollectLogs, isNvue = false, titleKey = 'title') => {
     const { isOnPageLifecycle } = logs.initConfig
 
     return {
+      data() {
+        return {
+          logsCustomTitle: ''
+        }
+      },
       methods: {
-        reportClick(params: any) {
-          this.$collectLogs.customReport(params)
+        tapEventReport(params: any) {
+          // this.$collectLogs.customReport(params)
+          const customTitle = this.logsCustomTitle || this[titleKey] || ''
+          this.$collectLogs.reportLog({
+            ...params,
+            customTitle
+          })
+        },
+        updateCustomTitle(title: string) {
+          this.logsCustomTitle = title
         },
         nvueLoad(customTitle: string) {
           wxb.$emit('collectLogs', {
@@ -32,18 +45,17 @@ export const useMixins = () => {
           })
         }
       },
-      onShow: debounce(function (options: any) {
+      onShow: debounce(async function (options: any) {
         // #ifdef APP-PLUS
+        await sleep(300)
         if (!isOnPageLifecycle) { return }
         if (options) { return }
-        console.log('自己创建的mixin onShow')
-        const logsRef = this.$refs?.collectLogs || {}
-        const title = logsRef.title
+        const customTitle = this.logsCustomTitle || this[titleKey] || ''
         if (isNvue && isIos) {
-          return this.nvueLoad(title)
+          return this.nvueLoad(customTitle)
         }
         requestReportLog({
-          customTitle: title,
+          customTitle,
           referer: previousPage,
           eventType: 'page_view'
         }, logs)
@@ -52,7 +64,6 @@ export const useMixins = () => {
       onHide: debounce(async function () {
         // #ifdef APP-PLUS
         if (!isOnPageLifecycle) { return }
-        console.log('自己创建的mixin onHide')
         previousPage = activityPage().route
         if (isNvue && isIos) {
           return this.nvueUnload({
@@ -65,7 +76,6 @@ export const useMixins = () => {
       onUnload() {
         // #ifdef APP-PLUS
         if (!isOnPageLifecycle) { return }
-        console.log('自己创建的mixin onUnload')
         previousPage = activityPage().route
         if (isNvue && isIos) {
           return this.nvueUnload({

@@ -147,7 +147,6 @@ export function clickProxy(options: any, method: any, logs: CollectLogs) {
       eventType
         && isClick(eventType)
         && tapText
-        // && tapType
         && requestReportLog({
           eventType: tapType || 'button_click',
           extendFields

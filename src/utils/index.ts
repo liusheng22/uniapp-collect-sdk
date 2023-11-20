@@ -1,4 +1,3 @@
-import { err } from './console-log'
 import { isArray, isFunction, isObject } from './data-type'
 import { wxb } from '@/constants'
 import { CustomFields, ExtendFields, PageOpts } from '@/types'
@@ -117,14 +116,12 @@ export function throttle(func: any, wait: any, options: any) {
 
 // 遍历找出 pages 的对象
 export const getPageInfo = (pages: any, pagePath: string) => {
-  // const page = pages[pagePath]
-  // return page || { navigationBarTitleText: '' }
-
   const page = pages[pagePath]
   return page || { navigationBarTitleText: '' }
 }
 
 export const getAppCurrPageView = () => {
+  const defaultTitleNView = { titleText: '' }
   let titleNView: PlusWebviewWebviewTitleNViewStyles = {}
   // #ifdef APP-PLUS
   const pages = getCurrentPages() || []
@@ -133,7 +130,7 @@ export const getAppCurrPageView = () => {
   const webView = page.$getAppWebview()
   titleNView = webView.getStyle().titleNView
   // #endif
-  return titleNView
+  return titleNView || defaultTitleNView
 }
 
 /**

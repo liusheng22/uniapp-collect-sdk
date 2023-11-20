@@ -173,10 +173,17 @@ export class CollectLogs {
         this.supplementFields = {}
         return
       }
-      return Promise.reject('缺少参数，如需清空自定义字段，请不传参数')
+
+      const msg = '埋点error:「updateCustomFields」函数调用失败，缺少参数，如需清空自定义字段，请不传参数'
+      err(msg)
+      return Promise.reject(msg)
     }
 
-    if (!isObject(customFields)) { return Promise.reject('传入参数必须是一个对象') }
+    if (!isObject(customFields)) {
+      const msg = '埋点error:「updateCustomFields」函数调用失败，传入参数必须是一个对象'
+      err(msg)
+      return Promise.reject(msg)
+    }
 
     const fieldsData = deepClone(this.supplementFields)
     const currentFields = isObject(fieldsData) ? fieldsData : {}
