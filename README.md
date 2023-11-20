@@ -21,7 +21,7 @@ npm install wxb-uniapp-inset-loader
 > 配置`vue.config.js`文件
 ```javascript
 const path = require('path')
-const insetLoader = path.resolve(__dirname, '../node_modules/wxb-uniapp-inset-loader/src/index.js')
+const insetLoader = path.resolve(__dirname, '../node_modules/wxb-uniapp-inset-loader/index.js')
 module.exports = {
   configureWebpack: {
     module: {
@@ -32,7 +32,9 @@ module.exports = {
             loader: insetLoader,
             options: {
               VUE_APP_PLATFORMS: ['app-plus'],
-              wxbCollectLogs: true
+              wxbCollectLogs: true,
+              // titleSelector: 自定义标题的选择器
+              titleSelector: '.-nav-title-text'
             }
           }
         }
@@ -115,7 +117,7 @@ this.$collectLogs.customReport(
 
 > `customFields` 更新自定义字段
 ```javascript
-this.$collectLogs.customFields({
+this.$collectLogs.updateCustomFields({
   // 慎用，推荐优先使用 init 中的 customFields 字段进行定义数据
   ...
   // 该方法调用后，传入的字段会覆盖 init 中的 customFields 字段
