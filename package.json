@@ -1,6 +1,6 @@
 {
   "name": "wxb-uniapp-collect-sdk",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "用于uniapp项目埋点",
   "author": "刘胜",
   "license": "ISC",
@@ -44,7 +44,7 @@
     "tsc-alias": "^1.8.8",
     "tslint-config-prettier": "^1.18.0",
     "ttypescript": "^1.5.15",
-    "typescript": "^3.9.10"
+    "typescript": "^4.9.5"
   },
   "husky": {
     "hooks": {
