@@ -1,28 +1,27 @@
 {
   "name": "wxb-uniapp-collect-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "用于uniapp项目埋点",
-  "author": "刘胜",
-  "license": "ISC",
+  "author": "wangxiaobao",
+  "license": "MIT",
   "homepage": "http://gitlab.wangxiaobao.com/npm/wxb-uniapp-collect-sdk",
   "repository": {
     "type": "git",
     "url": "http://gitlab.wangxiaobao.com/npm/wxb-uniapp-collect-sdk"
   },
-  "keywords": [],
-  "main": "bin/index.js",
-  "types": "bin/index.d.ts",
   "publishConfig": {
     "registry": "http://nexus3.wangxiaobao.com/repository/wxp-private/"
   },
+  "keywords": [],
+  "main": "bin/index.js",
+  "types": "bin/index.d.ts",
   "files": [
     "bin"
   ],
   "scripts": {
     "dev": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
-    "build": "tsc && tsc-alias && npm run cp-types",
+    "build": "tsc && tsc-alias && npm run",
     "release": "tsc && npm publish",
-    "cp-types": "copyfiles src/types/* bin",
     "eslint": "eslint . --fix --ext .ts",
     "prepare": "husky install",
     "vue2-wx": "cd examples/uniapp-vue2 && npm run dev:mp-weixin",
@@ -35,7 +34,6 @@
     "@types/uni-app": "^1.4.7",
     "@types/wechat-miniprogram": "^3.1.0",
     "concurrently": "^8.2.2",
-    "copyfiles": "^2.4.1",
     "eslint": "^8.26.0",
     "eslint-config-wxb-typescript": "^0.0.18",
     "husky": "^8.0.3",
@@ -43,7 +41,6 @@
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.8",
     "tslint-config-prettier": "^1.18.0",
-    "ttypescript": "^1.5.15",
     "typescript": "^4.9.5"
   },
   "husky": {
