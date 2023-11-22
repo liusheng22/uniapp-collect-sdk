@@ -116,18 +116,7 @@ export async function requestReportLog(
   const fieldData = logs.supplementFields
   const supplementFields = isObject(fieldData) ? fieldData : {}
   const pageTitle = navigationBarTitleText || titleText || customTitle
-  const properties = {
-    source_platform: sourcePlatform,
-    page_title: pageTitle,
-    page_id: pagePath,
-    page_query: pageQuery,
-    referer,
-    avail_width: windowWidth,
-    avail_height: windowHeight,
-    duration_times: 0,
-    ...supplementFields,
-    ...fieldsData
-  }
+
   // 设备信息
   const deviceInfo = {
     manufacturer: brand,
@@ -141,9 +130,23 @@ export async function requestReportLog(
     device_id: deviceId,
     screen_orientation: deviceOrientation
   }
+
+  const properties = {
+    source_platform: sourcePlatform,
+    page_title: pageTitle,
+    page_id: pagePath,
+    page_query: pageQuery,
+    referer,
+    avail_width: windowWidth,
+    avail_height: windowHeight,
+    duration_times: 0,
+    ...deviceInfo,
+    ...supplementFields,
+    ...fieldsData
+  }
+
   const eventObj = {
     ...baseParams,
-    ...deviceInfo,
     properties,
     lib
   }
