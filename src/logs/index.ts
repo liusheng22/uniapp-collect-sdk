@@ -100,7 +100,8 @@ export class CollectLogs {
   // 自定义上报方法
   public async customReport(opts: CustomReportOpts, properties: ExtendFields = {} ) {
     return new Promise((resolve, reject) => {
-      requestReportLog({ ...opts, libMethod: 'CODE', extendProps: properties }, this )
+      const that = getApp().globalData.collectLogs || this
+      requestReportLog({ ...opts, libMethod: 'CODE', extendProps: properties }, that )
         .then((data: any) => {
           resolve(data)
         })
@@ -162,15 +163,17 @@ export class CollectLogs {
    * @returns {Promise<any>} 更新结果
    */
   public async updateCustomFields(customFields: object): Promise<any> {
+    const that = getApp().globalData.collectLogs || this
+
     if (!customFields) {
       if (isUndefined(customFields)) {
         wxb.removeStorageSync(customFieldsStorageKey)
-        this.supplementFields = {}
+        that.supplementFields = {}
         return
       }
       if (isNull(customFields)) {
         wxb.removeStorageSync(customFieldsStorageKey)
-        this.supplementFields = {}
+        that.supplementFields = {}
         return
       }
 
@@ -185,7 +188,7 @@ export class CollectLogs {
       return Promise.reject(msg)
     }
 
-    const fieldsData = deepClone(this.supplementFields)
+    const fieldsData = deepClone(that.supplementFields)
     const currentFields = isObject(fieldsData) ? fieldsData : {}
     const newFields = {
       ...currentFields,
@@ -193,7 +196,7 @@ export class CollectLogs {
     }
 
     wxb.setStorageSync(customFieldsStorageKey, newFields)
-    this.supplementFields = newFields
+    that.supplementFields = newFields
 
     return newFields
   }
