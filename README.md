@@ -101,6 +101,23 @@ this.$collectLogs.init({
 ```
 
 > `customReport` 自定义事件上报
+- 第一个对象参数
+  - eventType(必填) - 事件名称，例如：
+    - button_click - 按钮点击事件
+    - page_view - 页面浏览事件
+  - project - 上报项目名称，例如：
+    - product - 产品埋点项目
+    - product_basic - 全埋点项目
+- 第二个对象参数
+  - 自定义上报数据字段
+  - 直接赋值即可，格式如下
+    ```javascript
+    {
+      role: '置业顾问',
+      tel: '123456789'
+    }
+    ```
+
 ```javascript
 this.$collectLogs.customReport(
   {
@@ -109,8 +126,11 @@ this.$collectLogs.customReport(
   },
   {
     // 自定义字段
+    role: '置业顾问',
+    tel: '123456789',
     ...
     // 会将该对象的所有字段作为自定义字段上报
+    // 字段取值优先级高于 init & updateCustomFields 中的 customFields 字段
   }
 )
 ```
@@ -119,6 +139,8 @@ this.$collectLogs.customReport(
 ```javascript
 this.$collectLogs.updateCustomFields({
   // 慎用，推荐优先使用 init 中的 customFields 字段进行定义数据
+  role: '置业顾问',
+  tel: '123456789',
   ...
   // 该方法调用后，传入的字段会覆盖 init 中的 customFields 字段
 })
