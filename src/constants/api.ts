@@ -1,4 +1,3 @@
-// https://secretdata.test.wangxiaobao.com/dc/
 export const baseUrl = '/dc/api/v1'
 
 export const apiUrls = {

@@ -19,7 +19,7 @@ import { validateParams } from '@/utils/validate'
  */
 export async function requestReportLog(
   opts: ReportOpts,
-  logs: CollectLogs,
+  logs: CollectLogs
 ): Promise<any> {
   const {
     referer,
@@ -44,7 +44,9 @@ export async function requestReportLog(
     return Promise.reject(msg)
   }
   if (extendProps && !isObject(extendProps)) {
-    const msg = `埋点error:「customReport」方法调用失败，自定义上报的属性不可以是一个${type(extendProps)}`
+    const msg = `埋点error:「customReport」方法调用失败，自定义上报的属性不可以是一个${type(
+      extendProps
+    )}`
     err(msg)
     return Promise.reject(msg)
   }
@@ -54,7 +56,13 @@ export async function requestReportLog(
     return Promise.reject(msg)
   }
 
-  const { uniqueId, sourcePlatform, serverUrl, project, customFields = { } } = logs.initConfig
+  const {
+    uniqueId,
+    sourcePlatform,
+    serverUrl,
+    project,
+    customFields = {}
+  } = logs.initConfig
 
   let fieldsData = {}
   if (customFields && !isObject(customFields)) {
@@ -151,10 +159,17 @@ export async function requestReportLog(
     lib
   }
 
-  log('上报数据:', {
-    ...baseParams,
-    properties
-  })
+  // log('上报数据:', {
+  //   ...baseParams,
+  //   properties
+  // })
+  log('上报数据 ---->>> :')
+  console.log(
+    JSON.stringify({
+      ...baseParams,
+      properties
+    })
+  )
 
   return new Promise((resolve, reject) => {
     logs.request({
