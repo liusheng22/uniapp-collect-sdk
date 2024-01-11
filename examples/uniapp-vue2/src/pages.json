@@ -1,17 +1,19 @@
 {
-  // "insetLoader": {
-  //   "config": {
-  //     "testComponent": "<test-component></test-component>"
-  //   },
-  //   // 全局配置
-  //   "label": ["testComponent"],
-  //   "rootEle": "view"
-  // },
-  "pages": [ // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+  "injectLoader": {
+    // "insetLabel": ["demo1-com"], // 插入标签
+    // "insetCode": ["demo2-com"], // 插入代码
+    "rootEle": "view"
+  },
+  "pages": [
+    // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
       "path": "pages/test/a",
       "style": {
-        "navigationBarTitleText": "a页面"
+        "navigationBarTitleText": "a页面",
+        "injectCode": ["demo1-com"], // 插入代码
+        "injectLabel": ["demo2-com"] // 插入代码
+        // "injectCode": ["demo1-com", "demo2-com"] // 插入代码
+        // "injectLabel": ["demo1-com", "demo2-com"] // 插入标签
       }
     },
     {

@@ -1,5 +1,7 @@
 <template>
   <view>
+    <div class="a">aa</div>
+    <div class="b">bb</div>
     <navigate-to url="/pages/test/a"></navigate-to>
     <navigate-to url="/pages/test/b"></navigate-to>
     <navigate-to url="/pages/test/c"></navigate-to>
@@ -19,6 +21,9 @@
       <img data-logs="猫-img" :src="img" mode="widthFix" @tap.stop />
     </view>
     <image data-logs="猫-image" :src="img" mode="widthFix" @tap.prevent />
+
+    <!-- <demo1-com />
+    <demo2-com /> -->
   </view>
 </template>
 
@@ -29,24 +34,66 @@ export default {
       img: 'https://img.yzcdn.cn/vant/cat.jpeg',
     }
   },
+  props: {
+    propA: {
+      type: String,
+      default: 'a',
+    },
+    propB: {
+      type: Number,
+      default: 1,
+    },
+  },
   onShareAppMessage() {
     return {
       title: 'a 页面',
     }
   },
-  methods: {
-    customReport() {
-      collectLogs.customReport({
-        project: 'custom_project',
-        eventType: 'custom-click'
-      },{
-        key1: 'value1',
-        key2: 'value2',
-      })
-    }
-  }
+  created() {
+    console.log('a page created -> this is a created')
+  },
+  mounted() {
+    console.log('a page mounted -> this is a mounted')
+  },
+  // methods: {
+  //   customReport() {
+  //     collectLogs.customReport({
+  //       project: 'custom_project',
+  //       eventType: 'custom-click'
+  //     },{
+  //       key1: 'value1',
+  //       key2: 'value2',
+  //     })
+  //   }
+  // }
 }
 </script>
 
+<!-- <script module="testModule" lang="renderjs">
+export default {
+  mounted() {
+    console.log('mounted -> this is testModule renderjs')
+  },
+  methods: {
+    testMethods() {
+      console.log('testMethods -> this is testModule renderjs methods')
+    },
+  }
+}
+</script> -->
+
 <style lang="scss" scoped>
+.a {
+  color: red;
+}
+</style>
+<style lang="scss" scoped>
+.b {
+  color: blue;
+}
+</style>
+<style lang="scss" scoped>
+.a {
+  color: yellow;
+}
 </style>

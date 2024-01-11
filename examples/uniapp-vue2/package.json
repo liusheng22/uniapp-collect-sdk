@@ -87,14 +87,14 @@
     "@dcloudio/vue-cli-plugin-uni-optimize": "^2.0.2-3090520231028001",
     "@dcloudio/webpack-uni-mp-loader": "^2.0.2-3090520231028001",
     "@dcloudio/webpack-uni-pages-loader": "^2.0.2-3090520231028001",
+    "@llius/uniapp-inject-loader": "^0.0.4",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "babel-plugin-import": "^1.11.0",
     "cross-env": "^7.0.2",
     "jest": "^25.4.0",
     "postcss-comment": "^2.0.0",
-    "vue-template-compiler": ">= 2.6.14 < 2.7",
-    "wxb-uniapp-inset-loader": "^0.0.6"
+    "vue-template-compiler": ">= 2.6.14 < 2.7"
   },
   "browserslist": [
     "Android >= 4.4",

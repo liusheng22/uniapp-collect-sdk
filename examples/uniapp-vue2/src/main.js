@@ -9,10 +9,10 @@ Vue.config.productionTip = false
 App.mpType = 'app'
 
 collectLogs.init({
-  sourcePlatform: 'test-platform',
-  uniqueId: 'test123',
-  project: 'product_basic',
-  serverUrl: 'https://secretdata.test.wangxiaobao.com',
+  sourcePlatform: 'test_platform',
+  uniqueId: 'test_uniqueId',
+  project: 'test_project',
+  serverUrl: 'https://example.com',
 
   customFields: {
     role: {
