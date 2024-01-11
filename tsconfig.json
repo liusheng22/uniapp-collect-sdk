@@ -1,45 +1,26 @@
 {
   "compilerOptions": {
-    "types": [
-      "@dcloudio/types",
-      "@types/wechat-miniprogram",
-      "@types/uni-app"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
-    "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "sourceMap": false,
-    "noImplicitAny": false,
-    "declaration": true,
     "target": "ES6",
-    "module": "commonjs",
-    "lib": [
-      "ES2015",
-      "ES2016",
-      "ES2017",
-      "DOM",
-      "ScriptHost"
-    ],
-    "experimentalDecorators": true, // 启用实验性的ES装饰器
-    "emitDecoratorMetadata": true, // 为装饰器提供元数据的支持
-    "outDir": "./bin",
+    "lib": ["ES2015", "ES2016", "ES2017", "DOM", "ScriptHost"], // 启用实验性的ES装饰器
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
     "rootDir": "./src",
-    "strict": false, // 启用所有严格类型检查选项
+    "module": "commonjs",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["@dcloudio/types", "@types/wechat-miniprogram", "@types/uni-app"],
+    "allowJs": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "declaration": true, // 为装饰器提供元数据的支持
+    "outDir": "./bin",
+    "sourceMap": false,
+    "allowSyntheticDefaultImports": true, // 启用所有严格类型检查选项
     "esModuleInterop": true, // 启用es模块导入到commonjs的转换
     "skipLibCheck": true // 跳过声明文件的检查
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "examples",
-    "**/*.js"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "examples", "**/*.js"]
 }

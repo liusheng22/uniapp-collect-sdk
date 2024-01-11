@@ -1,21 +1,29 @@
 {
   "prettier.enable": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
   },
+  "eslint.experimental.useFlatConfig": true,
   "eslint.validate": [
     "javascript",
     "typescript",
     "javascriptreact",
     "typescriptreact",
+    "vue",
     "json",
     "jsonc",
-    "json5"
+    "json5",
+    "yaml"
   ],
   "cSpell.words": [
     "commitlint",
     "copyfiles",
     "dcloudio",
+    "deepmerge",
+    "flyio",
+    "liusheng",
+    "llius",
     "longpress",
     "longtap",
     "nvue",

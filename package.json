@@ -1,18 +1,29 @@
 {
-  "name": "wxb-uniapp-collect-sdk",
-  "version": "0.1.2",
+  "name": "@llius/uniapp-collect-sdk",
+  "version": "0.0.1",
   "description": "用于uniapp项目埋点",
-  "author": "wangxiaobao",
+  "author": "liusheng",
   "license": "MIT",
-  "homepage": "http://gitlab.wangxiaobao.com/npm/wxb-uniapp-collect-sdk",
+  "homepage": "https://github.com/liusheng22/uniapp-collect-sdk",
   "repository": {
     "type": "git",
-    "url": "http://gitlab.wangxiaobao.com/npm/wxb-uniapp-collect-sdk"
+    "url": "https://github.com/liusheng22/uniapp-collect-sdk"
   },
   "publishConfig": {
-    "registry": "http://nexus3.wangxiaobao.com/repository/wxp-private/"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
-  "keywords": [],
+  "keywords": [
+    "uniapp",
+    "collect",
+    "javascript",
+    "typescript",
+    "statistics",
+    "埋点",
+    "采集",
+    "上报",
+    "sdk"
+  ],
   "main": "bin/index.js",
   "types": "bin/index.d.ts",
   "files": [
@@ -22,7 +33,7 @@
     "dev": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "build": "tsc && tsc-alias && npm run",
     "release": "tsc && npm publish",
-    "eslint": "eslint . --fix --ext .ts",
+    "lint": "eslint . --fix --ext .ts",
     "prepare": "husky install",
     "vue2-wx": "cd examples/uniapp-vue2 && npm run dev:mp-weixin",
     "vue2-tt": "cd examples/uniapp-vue2 && npm run dev:mp-toutiao"
@@ -31,13 +42,13 @@
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@dcloudio/types": "^3.4.3",
+    "@sujian/eslint-config": "^1.0.4",
     "@types/uni-app": "^1.4.7",
     "@types/wechat-miniprogram": "^3.1.0",
     "concurrently": "^8.2.2",
-    "eslint": "^8.26.0",
-    "eslint-config-wxb-typescript": "^0.0.18",
+    "eslint": "^8.56.0",
     "husky": "^8.0.3",
-    "lint-staged": "^13.2.3",
+    "lint-staged": "^15.2.0",
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.8",
     "tslint-config-prettier": "^1.18.0",
@@ -45,12 +56,11 @@
   },
   "husky": {
     "hooks": {
+      "pre-commit": "lint-staged",
       "commit-msg": "commitlint -e $GIT_PARAMS"
     }
   },
   "lint-staged": {
-    "*.js": [
-      "eslint --ext .ts"
-    ]
+    "*.ts": "eslint --fix"
   }
 }

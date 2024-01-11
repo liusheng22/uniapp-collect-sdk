@@ -10,18 +10,18 @@
 ### 接入方式
 > 安装埋点SDK
 ```shell
-npm install wxb-uniapp-collect-sdk
+npm install @llius/uniapp-collect-sdk
 ```
 
 > 安装埋点SDK的loader
 ```shell
-npm install wxb-uniapp-inset-loader
+npm install @llius/uniapp-inject-loader
 ```
 
 > 配置`vue.config.js`文件
 ```javascript
 const path = require('path')
-const insetLoader = path.resolve(__dirname, '../node_modules/wxb-uniapp-inset-loader/index.js')
+const insetLoader = path.resolve(__dirname, '../node_modules/@llius/uniapp-inject-loader/index.js')
 module.exports = {
   configureWebpack: {
     module: {
@@ -48,7 +48,7 @@ module.exports = {
 ```javascript
 // file utils/logs.js
 import Vue from 'vue'
-import { CollectLogs } from 'wxb-uniapp-collect-sdk'
+import { CollectLogs } from '@llius/uniapp-collect-sdk'
 
 export const collectLogs = new CollectLogs(Vue)
 ```
@@ -61,7 +61,7 @@ collectLogs.init({
   sourcePlatform: '', // 平台类型
   uniqueId: '', // 用户唯一标识
   project: '', // 项目名称
-  serverUrl: 'https://secretdata.test.wangxiaobao.com',
+  serverUrl: 'https://example.com/api',
   customFields: { // 自定义字段，解释见下方
     role: {
       value: '置业顾问',
